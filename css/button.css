@@ -1,0 +1,33 @@
+.button {
+  display: block;
+  height: 40px;
+  width: 100%;
+  margin-top: 20px;
+  border: 0;
+  outline: none;
+  padding: 0 20px;
+  border-radius: 200px;
+  background-color: #7b72e9;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+  user-select: none;
+  transition-duration: 0.3s;
+  transition-property: background-color;
+}
+
+.button:hover {
+  background: #a49ef0;
+}
+
+.button:disabled:hover {
+  background: gray;
+}
+
+.button:disabled {
+  transition: none;
+  background: gray;
+  cursor: not-allowed;
+}
