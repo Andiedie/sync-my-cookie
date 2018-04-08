@@ -37,19 +37,30 @@ gist = {
     }
   },
 
-  async createGist () {
-    await this.ax.post('/gists', {
+  async createGist (raw = '[]') {
+    const { data } = await this.ax.post('/gists', {
       description: 'Sync-My-Cookie',
       files: {
         sync_my_cookie: {
-          content: CryptoJS.AES.encrypt('[]', this.option.secret).toString()
+          content: CryptoJS.AES.encrypt(raw, this.option.secret).toString()
         }
       }
     });
+    return data.id;
   },
-  // TODO: bean deleted
   async pull () {
-    let { data } = await this.ax.get(`/gists/${this.option.gistid}`);
+    let data;
+    try {
+      ({ data } = await this.ax.get(`/gists/${this.option.gistid}`));
+    } catch (err) {
+      if (err.response && err.response.status === 404) {
+        this.option.gistid = await this.createGist();
+        await storage.save(this.option);
+        return '[]';
+      } else {
+        throw err;
+      }
+    }
     if (!data.files.sync_my_cookie) return '[]';
     if (data.files.sync_my_cookie.size === 0) return '[]';
     if (data.files.sync_my_cookie.truncated) {
@@ -64,12 +75,21 @@ gist = {
 
   async push (raw) {
     const encrypted = CryptoJS.AES.encrypt(raw, this.option.secret).toString();
-    await this.ax.patch(`/gists/${this.option.gistid}`, {
-      files: {
-        sync_my_cookie: {
-          content: encrypted
+    try {
+      await this.ax.patch(`/gists/${this.option.gistid}`, {
+        files: {
+          sync_my_cookie: {
+            content: encrypted
+          }
         }
+      });
+    } catch (err) {
+      if (err.response && err.response.status === 404) {
+        this.option.gistid = await this.createGist(raw);
+        await storage.save(this.option);
+      } else {
+        throw err;
       }
-    });
+    }
   }
 };

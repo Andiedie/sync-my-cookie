@@ -27,6 +27,6 @@
     "\u003Call_urls\u003E",
     "tabs"
   ],
-  "minimum_chrome_version": "51",
+  "minimum_chrome_version": "64",
   "manifest_version": 2
 }

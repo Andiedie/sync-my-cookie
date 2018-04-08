@@ -11,7 +11,6 @@ pushBtn.onclick = async () => {
   try {
     pushBtn.disabled = true;
     const cookiesJson = await cookie.exportToJSON();
-    console.log(cookiesJson);
     await gist.push(cookiesJson);
   } catch (err) {
     alert(err.response ? err.response.data.message : err.message);
@@ -24,7 +23,6 @@ pullBtn.onclick = async () => {
   try {
     pullBtn.disabled = true;
     const cookiesJson = await gist.pull();
-    console.log(cookiesJson);
     await cookie.importFromJSON(cookiesJson);
   } catch (err) {
     alert(err.response ? err.response.data.message : err.message);
