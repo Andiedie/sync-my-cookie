@@ -40,7 +40,8 @@ saveBtn.onclick = async () => {
       gistidInput.value = option.gistid;
     }
     await storage.save(option);
-    swal('Done', '', 'success');
+    await swal('Done', '', 'success');
+    window.close();
   } catch (err) {
     swal(err.message, '', 'error');
   } finally {

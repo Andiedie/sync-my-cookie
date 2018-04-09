@@ -1,32 +1,34 @@
 export default {
   async export () {
-    return getAll(await getCurrentUrl());
+    return this.getAll(await this.getCurrentUrl());
   },
+
   async import (cookieArray) {
     for (const fullCookie of cookieArray) {
       const cookie = cookieForCreationFromFullCookie(fullCookie);
       chrome.cookies.set(cookie);
     }
+  },
+
+  async getCurrentUrl () {
+    return new Promise((resolve, reject) => {
+      chrome.tabs.query({
+        active: true,
+        currentWindow: true
+      }, function (tabs) {
+        resolve(tabs[0].url);
+      });
+    });
+  },
+
+  async getAll (url) {
+    return new Promise((resolve, reject) => {
+      chrome.cookies.getAll({ url }, function (cks) {
+        resolve(cks);
+      });
+    });
   }
 };
-async function getCurrentUrl () {
-  return new Promise((resolve, reject) => {
-    chrome.tabs.query({
-      active: true,
-      currentWindow: true
-    }, function (tabs) {
-      resolve(tabs[0].url);
-    });
-  });
-}
-
-async function getAll (url) {
-  return new Promise((resolve, reject) => {
-    chrome.cookies.getAll({ url }, function (cks) {
-      resolve(cks);
-    });
-  });
-}
 
 function cookieForCreationFromFullCookie (fullCookie) {
   const newCookie = {
