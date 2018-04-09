@@ -5,9 +5,9 @@ const saveBtn = document.getElementById('save');
 
 (async () => {
   const option = await storage.load();
-  tokenInput.value = option.token;
-  gistidInput.value = option.gistid;
-  secretInput.value = option.secret;
+  tokenInput.value = option.token || '';
+  gistidInput.value = option.gistid || '';
+  secretInput.value = option.secret || '';
 })();
 
 saveBtn.onclick = async () => {
@@ -35,9 +35,9 @@ saveBtn.onclick = async () => {
       gistidInput.value = option.gistid;
     }
     await storage.save(option);
-    alert('Success!');
+    swal('Done', '', 'success');
   } catch (err) {
-    alert(err.message);
+    swal(err.message, '', 'error');
   } finally {
     saveBtn.disabled = false;
     saveBtn.innerText = 'Save';

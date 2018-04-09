@@ -2,7 +2,7 @@ gist = {
   option: {},
   ax: null,
 
-  init (option) {
+  init(option) {
     this.option = option;
     this.ax = axios.create({
       baseURL: 'https://api.github.com',
@@ -10,7 +10,7 @@ gist = {
     });
   },
 
-  async checkOAuthScope () {
+  async checkOAuthScope() {
     try {
       const { headers } = await this.ax.get('/');
       if (!headers['x-oauth-scopes'].includes('gist')) {
@@ -24,7 +24,7 @@ gist = {
     }
   },
 
-  async checkGistId () {
+  async checkGistId() {
     try {
       await this.ax.patch(`/gists/${this.option.gistid}`, {
         description: 'Sync-My-Cookie'
@@ -37,7 +37,7 @@ gist = {
     }
   },
 
-  async createGist (raw = '[]') {
+  async createGist(raw = '[]') {
     const { data } = await this.ax.post('/gists', {
       description: 'Sync-My-Cookie',
       files: {
@@ -48,7 +48,7 @@ gist = {
     });
     return data.id;
   },
-  async pull () {
+  async pull() {
     let data;
     try {
       ({ data } = await this.ax.get(`/gists/${this.option.gistid}`));
@@ -68,12 +68,16 @@ gist = {
     } else {
       data = data.files.sync_my_cookie.content;
     }
-    const buffer = CryptoJS.AES.decrypt(data, this.option.secret);
-    if (buffer.sigBytes < 0) throw Error('Secret Wrong!');
-    return buffer.toString(CryptoJS.enc.Utf8);
+    try {
+      const buffer = CryptoJS.AES.decrypt(data, this.option.secret);
+      if (buffer.sigBytes < 0) throw Error('Secret Wrong!');
+      return buffer.toString(CryptoJS.enc.Utf8);
+    } catch (err) {
+      throw Error('Secret Wrong!');
+    }
   },
 
-  async push (raw) {
+  async push(raw) {
     const encrypted = CryptoJS.AES.encrypt(raw, this.option.secret).toString();
     try {
       await this.ax.patch(`/gists/${this.option.gistid}`, {

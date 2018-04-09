@@ -2,6 +2,8 @@ html, body {
   border: 0;
   padding: 0;
   margin: 0;
+  height: 100% !important;
+  width: 100%;
 }
 
 body {
@@ -9,10 +11,6 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-.logo {
-  margin-top: 20px;
 }
 
 .label {
@@ -27,6 +25,8 @@ body {
 #save {
   width: 300px;
   padding: 0;
+  margin-bottom: 10%;
+  margin-top: 20px;
 }
 
 .input {

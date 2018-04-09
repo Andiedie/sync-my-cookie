@@ -3,6 +3,13 @@ const pullBtn = document.getElementById('pull');
 const settingBtn = document.getElementById('setting');
 let option;
 
+const ask = async (txt) => {
+  return (await swal({
+    title: txt,
+    showCancelButton: true
+  })).value;
+}
+
 settingBtn.onclick = () => {
   chrome.tabs.create({ 'url': '/options.html' });
 };
@@ -10,10 +17,15 @@ settingBtn.onclick = () => {
 pushBtn.onclick = async () => {
   try {
     pushBtn.disabled = true;
-    const cookiesJson = await cookie.exportToJSON();
-    await gist.push(cookiesJson);
+    const cookieArray = await cookie.export();
+    if (cookieArray.length === 0) {
+      swal('No cookie for current URL');
+    } else if (await ask(`Push ${cookieArray.length} cookies for "${cookieArray[0].domain}"?`)) {
+      await gist.push(JSON.stringify(cookieArray));
+      swal('Push done');
+    }
   } catch (err) {
-    alert(err.response ? err.response.data.message : err.message);
+    swal(err.response ? err.response.data.message : err.message);
   } finally {
     pushBtn.disabled = false;
   }
@@ -22,10 +34,16 @@ pushBtn.onclick = async () => {
 pullBtn.onclick = async () => {
   try {
     pullBtn.disabled = true;
-    const cookiesJson = await gist.pull();
-    await cookie.importFromJSON(cookiesJson);
+    const cookieArray = JSON.parse(await gist.pull());
+    console.log(cookieArray);
+    if (cookieArray.length === 0) {
+      swal('Pull done');
+    } else if (await ask(`Pull ${cookieArray.length} cookies for "${cookieArray[0].domain}"?`)) {
+      await cookie.import(cookieArray);
+      swal('Pull done');
+    }
   } catch (err) {
-    alert(err.response ? err.response.data.message : err.message);
+    swal(err.response ? err.response.data.message : err.message);
   } finally {
     pullBtn.disabled = false;
   }

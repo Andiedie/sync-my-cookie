@@ -1,24 +1,15 @@
 cookie = {
-  async exportToJSON () {
-    const cookies = await getAll(await getCurrentUrl());
-    return JSON.stringify(cookies);
+  async export() {
+    return getAll(await getCurrentUrl());
   },
-  async importFromJSON (json) {
-    let cookieArray;
-    cookieArray = JSON.parse(json);
-    if (!(cookieArray instanceof Array)) cookieArray = [cookieArray];
+  async import(cookieArray) {
     for (const fullCookie of cookieArray) {
       const cookie = cookieForCreationFromFullCookie(fullCookie);
-      try {
-        chrome.cookies.set(cookie);
-      } catch (e) {
-        alert(e.message);
-        return;
-      }
+      chrome.cookies.set(cookie);
     }
   }
 };
-async function getCurrentUrl () {
+async function getCurrentUrl() {
   return new Promise((resolve, reject) => {
     chrome.tabs.query({
       active: true,
@@ -29,7 +20,7 @@ async function getCurrentUrl () {
   });
 }
 
-async function getAll (url) {
+async function getAll(url) {
   return new Promise((resolve, reject) => {
     chrome.cookies.getAll({ url }, function (cks) {
       resolve(cks);
@@ -37,7 +28,7 @@ async function getAll (url) {
   });
 }
 
-function cookieForCreationFromFullCookie (fullCookie) {
+function cookieForCreationFromFullCookie(fullCookie) {
   const newCookie = {
     name: fullCookie.name,
     value: fullCookie.value,
@@ -52,7 +43,7 @@ function cookieForCreationFromFullCookie (fullCookie) {
   return newCookie;
 }
 
-function buildUrl (secure, domain, path) {
+function buildUrl(secure, domain, path) {
   if (domain.substr(0, 1) === '.') domain = domain.substring(1);
   return 'http' + (secure ? 's' : '') + '://' + domain + path;
 }
