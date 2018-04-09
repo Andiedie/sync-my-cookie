@@ -1,3 +1,10 @@
+import swal from 'sweetalert2';
+import cookie from '@/utils/cookie.js';
+import gist from '@/utils/gist.js';
+import storage from '@/utils/storage.js';
+import '@/style/button.css';
+import '@/style/iconfont.css';
+import '@/popup/popup.css';
 const pushBtn = document.getElementById('push');
 const pullBtn = document.getElementById('pull');
 const settingBtn = document.getElementById('setting');
@@ -8,7 +15,7 @@ const ask = async (txt) => {
     title: txt,
     showCancelButton: true
   })).value;
-}
+};
 
 settingBtn.onclick = () => {
   chrome.tabs.create({ 'url': '/options.html' });
@@ -35,7 +42,6 @@ pullBtn.onclick = async () => {
   try {
     pullBtn.disabled = true;
     const cookieArray = JSON.parse(await gist.pull());
-    console.log(cookieArray);
     if (cookieArray.length === 0) {
       swal('Pull done');
     } else if (await ask(`Pull ${cookieArray.length} cookies for "${cookieArray[0].domain}"?`)) {

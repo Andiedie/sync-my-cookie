@@ -1,4 +1,4 @@
-storage = {
+export default {
   async save (option) {
     return new Promise((resolve, reject) => {
       chrome.storage.sync.set({

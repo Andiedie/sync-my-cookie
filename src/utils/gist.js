@@ -1,18 +1,21 @@
-gist = {
-  option: {},
-  ax: null,
+import axios from 'axios';
+import storage from './storage';
+import aes from 'crypto-js/aes';
+import UTF8 from 'crypto-js/enc-utf8';
+let options, ax;
 
-  init(option) {
-    this.option = option;
-    this.ax = axios.create({
+export default {
+  init (opt) {
+    options = opt;
+    ax = axios.create({
       baseURL: 'https://api.github.com',
-      headers: { Authorization: `token ${this.option.token}` }
+      headers: { Authorization: `token ${options.token}` }
     });
   },
 
-  async checkOAuthScope() {
+  async checkOAuthScope () {
     try {
-      const { headers } = await this.ax.get('/');
+      const { headers } = await ax.get('/');
       if (!headers['x-oauth-scopes'].includes('gist')) {
         throw new Error('Token verification failed：\nThe OAuth scopes of token must contain "gist"');
       }
@@ -24,9 +27,9 @@ gist = {
     }
   },
 
-  async checkGistId() {
+  async checkGistId () {
     try {
-      await this.ax.patch(`/gists/${this.option.gistid}`, {
+      await ax.patch(`/gists/${options.gistid}`, {
         description: 'Sync-My-Cookie'
       });
     } catch (err) {
@@ -37,25 +40,25 @@ gist = {
     }
   },
 
-  async createGist(raw = '[]') {
-    const { data } = await this.ax.post('/gists', {
+  async createGist (raw = '[]') {
+    const { data } = await ax.post('/gists', {
       description: 'Sync-My-Cookie',
       files: {
         sync_my_cookie: {
-          content: CryptoJS.AES.encrypt(raw, this.option.secret).toString()
+          content: aes.encrypt(raw, options.secret).toString()
         }
       }
     });
     return data.id;
   },
-  async pull() {
+  async pull () {
     let data;
     try {
-      ({ data } = await this.ax.get(`/gists/${this.option.gistid}`));
+      ({ data } = await ax.get(`/gists/${options.gistid}`));
     } catch (err) {
       if (err.response && err.response.status === 404) {
-        this.option.gistid = await this.createGist();
-        await storage.save(this.option);
+        options.gistid = await this.createGist();
+        await storage.save(options);
         return '[]';
       } else {
         throw err;
@@ -64,23 +67,23 @@ gist = {
     if (!data.files.sync_my_cookie) return '[]';
     if (data.files.sync_my_cookie.size === 0) return '[]';
     if (data.files.sync_my_cookie.truncated) {
-      ({ data } = await this.ax.get(data.files.sync_my_cookie.raw_url));
+      ({ data } = await ax.get(data.files.sync_my_cookie.raw_url));
     } else {
       data = data.files.sync_my_cookie.content;
     }
     try {
-      const buffer = CryptoJS.AES.decrypt(data, this.option.secret);
+      const buffer = aes.decrypt(data, options.secret);
       if (buffer.sigBytes < 0) throw Error('Secret Wrong!');
-      return buffer.toString(CryptoJS.enc.Utf8);
+      return buffer.toString(UTF8);
     } catch (err) {
       throw Error('Secret Wrong!');
     }
   },
 
-  async push(raw) {
-    const encrypted = CryptoJS.AES.encrypt(raw, this.option.secret).toString();
+  async push (raw) {
+    const encrypted = aes.encrypt(raw, options.secret).toString();
     try {
-      await this.ax.patch(`/gists/${this.option.gistid}`, {
+      await ax.patch(`/gists/${options.gistid}`, {
         files: {
           sync_my_cookie: {
             content: encrypted
@@ -89,8 +92,8 @@ gist = {
       });
     } catch (err) {
       if (err.response && err.response.status === 404) {
-        this.option.gistid = await this.createGist(raw);
-        await storage.save(this.option);
+        options.gistid = await this.createGist(raw);
+        await storage.save(options);
       } else {
         throw err;
       }

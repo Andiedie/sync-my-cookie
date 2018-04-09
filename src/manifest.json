@@ -1,7 +1,7 @@
 {
   "name": "SyncMyCookie",
-  "version": "0.0.1",
-  "description": "Synchronize all your cookies in specific web site across chrome instances with gist.",
+  "version": "0.0.2",
+  "description": "Synchronize all your cookies for specific web site across chrome instances with gist.",
   "icons": {
     "16": "img/icon16.png",
     "32": "img/icon32.png",
@@ -27,6 +27,5 @@
     "\u003Call_urls\u003E",
     "tabs"
   ],
-  "minimum_chrome_version": "64",
   "manifest_version": 2
 }
