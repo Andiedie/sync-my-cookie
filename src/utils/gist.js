@@ -9,7 +9,10 @@ export default {
     options = opt;
     ax = axios.create({
       baseURL: 'https://api.github.com',
-      headers: { Authorization: `token ${options.token}` }
+      headers: {
+        Authorization: `token ${options.token}`,
+        'Cache-Control': 'no-cache'
+      }
     });
   },
 

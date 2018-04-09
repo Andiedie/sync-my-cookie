@@ -1,6 +1,6 @@
 export default {
   async export () {
-    return this.getAll(await this.getCurrentUrl());
+    return this.getAll({ url: await this.getCurrentUrl() });
   },
 
   async import (cookieArray) {
@@ -21,9 +21,9 @@ export default {
     });
   },
 
-  async getAll (url) {
+  async getAll (details) {
     return new Promise((resolve, reject) => {
-      chrome.cookies.getAll({ url }, function (cks) {
+      chrome.cookies.getAll(details, function (cks) {
         resolve(cks);
       });
     });

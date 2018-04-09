@@ -15,13 +15,81 @@ body {
 }
 
 .button-wrapper {
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-content: center;
 }
 
-.logo-wrapper {
+.button-wrapper .button {
+  margin-top: 20px;
+}
+
+.list-wrapper {
+  height: 160px;
+  position: relative;
+  overflow-y: scroll;
+}
+
+.list-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.list-wrapper .button {
+  margin-bottom: 5px;
+  background: #3879d9;
+  color: white;
+}
+
+.list-wrapper .button:hover {
+  background: #01a3d9;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.double-bounce1, .double-bounce2 {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #3879d9;
+  opacity: 0.6;
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: sk-bounce 1.5s infinite ease-in-out;
+}
+
+.double-bounce2 {
+  animation-delay: -0.75s;
+}
+
+@-webkit-keyframes sk-bounce {
+  0%, 100% { -webkit-transform: scale(0.0) }
+  50% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bounce {
+  0%, 100% { 
+    transform: scale(0.0);
+    -webkit-transform: scale(0.0);
+  } 50% { 
+    transform: scale(1.0);
+    -webkit-transform: scale(1.0);
+  }
+}
+
+.empty-wrapper {
+  height: 160px;
+  line-height: 160px;
+  font-size: 30px;
   text-align: center;
 }

@@ -1,4 +1,5 @@
 .button {
+  position: relative;
   display: block;
   height: 40px;
   width: 100%;
@@ -21,6 +22,10 @@
   background: #a49ef0;
 }
 
+.button:hover .close {
+  opacity: 1;
+}
+
 .button:disabled:hover {
   background: gray;
 }
@@ -29,4 +34,30 @@
   transition: none;
   background: gray;
   cursor: not-allowed;
+}
+
+.button:disabled .close {
+  display: none;
+}
+
+.close {
+  opacity: 0;
+  display: inline-block;
+  position: absolute;
+  right: 7px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: black;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+  transition-duration: 0.3s;
+  transition-property: opacity;
 }
