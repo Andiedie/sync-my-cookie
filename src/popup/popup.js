@@ -54,7 +54,7 @@ pushBtn.onclick = async () => {
   }
 };
 
-async function merge (e) {
+async function merge(e) {
   try {
     const one = cookieArray[this.cookie_index];
     if (one.cookies.length === 0) {
@@ -69,7 +69,7 @@ async function merge (e) {
   }
 }
 
-async function remove (e) {
+async function remove(e) {
   e.stopPropagation();
   try {
     this.disabled = true;
@@ -89,7 +89,7 @@ async function remove (e) {
   }
 }
 
-async function toggleAutoMerge (e) {
+async function toggleAutoMerge(e) {
   e.stopPropagation();
   try {
     const one = cookieArray[this.parentNode.cookie_index];
@@ -107,7 +107,7 @@ async function toggleAutoMerge (e) {
   }
 }
 
-function renderList () {
+function renderList() {
   while (listEle.firstChild) listEle.removeChild(listEle.firstChild);
   for (let i = 0; i < cookieArray.length; i++) {
     const one = cookieArray[i];
@@ -148,6 +148,7 @@ function renderList () {
   option = await storage.load();
   if (!option.token || !option.gistid || !option.secret) {
     pushBtn.disabled = true;
+    renderList();
     return;
   }
   gist.init(option);
