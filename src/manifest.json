@@ -1,6 +1,6 @@
 {
   "name": "SyncMyCookie",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Synchronize all your cookies for specific web site across chrome instances with gist.",
   "icons": {
     "16": "img/icon16.png",
