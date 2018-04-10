@@ -30,14 +30,13 @@ pushBtn.onclick = async () => {
     if (array.length === 0) {
       swal('No cookie for current domain');
     } else {
-      // 覆盖
       const domain = require('url').parse(await cookie.getCurrentUrl()).hostname;
       const duplicatedIndex = cookieArray.findIndex(one => one.domain === domain);
       let askMsg = duplicatedIndex >= 0
         ? `Cookies for "${domain}" already exists. Replace them with these ${array.length} ones?`
         : `Push ${array.length} cookies for "${domain}"?`;
       if (await ask(askMsg)) {
-        cookieArray.splice(duplicatedIndex, 1);
+        if (duplicatedIndex >= 0) cookieArray.splice(duplicatedIndex, 1);
         cookieArray.unshift({
           domain,
           cookies: array
