@@ -1,3 +1,5 @@
+@import './variables.css';
+
 .button {
   position: relative;
   display: block;
@@ -7,7 +9,7 @@
   outline: none;
   padding: 0 20px;
   border-radius: 200px;
-  background-color: #7b72e9;
+  background-color: var(--primary);
   font-size: 16px;
   color: white;
   text-align: center;
@@ -19,10 +21,10 @@
 }
 
 .button:hover {
-  background: #a49ef0;
+  background: var(--primary-hover);
 }
 
-.button:hover .close {
+.button:hover .radius {
   opacity: 1;
 }
 
@@ -36,18 +38,13 @@
   cursor: not-allowed;
 }
 
-.button:disabled .close {
+.button:disabled .radius {
   display: none;
 }
 
-.close {
+.radius {
   opacity: 0;
   display: inline-block;
-  position: absolute;
-  right: 7px;
-  top: 0;
-  bottom: 0;
-  margin: auto;
   background-color: black;
   height: 30px;
   width: 30px;
@@ -60,4 +57,20 @@
   user-select: none;
   transition-duration: 0.3s;
   transition-property: opacity;
+}
+
+.abosulte-left {
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.abosulte-right {
+  position: absolute;
+  right: 7px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
 }

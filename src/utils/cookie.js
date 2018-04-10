@@ -3,7 +3,7 @@ export default {
     return this.getAll({ url: await this.getCurrentUrl() });
   },
 
-  async import (cookieArray) {
+  import (cookieArray) {
     for (const fullCookie of cookieArray) {
       const cookie = cookieForCreationFromFullCookie(fullCookie);
       chrome.cookies.set(cookie);

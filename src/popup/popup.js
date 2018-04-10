@@ -10,6 +10,7 @@ const settingBtn = document.getElementById('setting');
 const listEle = document.getElementById('list');
 let option;
 let cookieArray = [];
+let autoMergeSet = new Set();
 
 const ask = async (txt) => {
   return (await swal({
@@ -55,19 +56,16 @@ pushBtn.onclick = async () => {
 
 async function merge (e) {
   try {
-    this.disabled = true;
     const one = cookieArray[this.cookie_index];
     if (one.cookies.length === 0) {
       return swal('Merged');
     }
     if (await ask(`Merge ${one.cookies.length} cookies for "${one.domain}"?`)) {
-      await cookie.import(one.cookies);
+      cookie.import(one.cookies);
       swal('Merged');
     }
   } catch (err) {
     swal(err.response ? err.response.data.message : err.message);
-  } finally {
-    this.disabled = false;
   }
 }
 
@@ -75,10 +73,12 @@ async function remove (e) {
   e.stopPropagation();
   try {
     this.disabled = true;
-    const one = cookieArray[this.cookie_index];
+    const one = cookieArray[this.parentNode.cookie_index];
     if (await ask(`Remove ${one.cookies.length} cookies for "${one.domain}"?`)) {
-      cookieArray.splice(this.cookie_index, 1);
+      cookieArray.splice(this.parentNode.cookie_index, 1);
+      autoMergeSet.delete(one.domain);
       await gist.push(JSON.stringify(cookieArray));
+      await storage.setAutoMergeSet(autoMergeSet);
       swal('Deleted');
       renderList();
     }
@@ -89,30 +89,58 @@ async function remove (e) {
   }
 }
 
+async function toggleAutoMerge (e) {
+  e.stopPropagation();
+  try {
+    const one = cookieArray[this.parentNode.cookie_index];
+    this.parentNode.classList.toggle('auto-merge');
+    this.classList.toggle('icon-plus-minus');
+    this.classList.toggle('icon-plus-add');
+    if (autoMergeSet.has(one.domain)) {
+      autoMergeSet.delete(one.domain);
+    } else {
+      autoMergeSet.add(one.domain);
+    }
+    await storage.setAutoMergeSet(autoMergeSet);
+  } catch (err) {
+    swal(err.response ? err.response.data.message : err.message);
+  }
+}
+
 function renderList () {
   while (listEle.firstChild) listEle.removeChild(listEle.firstChild);
   for (let i = 0; i < cookieArray.length; i++) {
+    const one = cookieArray[i];
     const buttonEle = document.createElement('button');
     buttonEle.className = 'button';
     buttonEle.cookie_index = i;
     buttonEle.onclick = merge;
-    const iEle = document.createElement('i');
-    iEle.className = 'iconfont icon-xiazai';
-    buttonEle.appendChild(iEle);
-    buttonEle.appendChild(document.createTextNode(` ${cookieArray[i].domain} `));
-    const divEle = document.createElement('div');
-    divEle.innerHTML = 'X';
-    divEle.className = 'close';
-    divEle.cookie_index = i;
-    divEle.onclick = remove;
-    buttonEle.appendChild(divEle);
+
+    const closeEle = document.createElement('i');
+    closeEle.className = 'iconfont icon-guanbi radius abosulte-right';
+    closeEle.onclick = remove;
+
+    const autoMergeEle = document.createElement('i');
+    autoMergeEle.className = 'radius abosulte-left iconfont';
+    autoMergeEle.onclick = toggleAutoMerge;
+
+    if (autoMergeSet.has(one.domain)) {
+      buttonEle.className += ' auto-merge';
+      autoMergeEle.className += ' icon-plus-minus';
+    } else {
+      autoMergeEle.className += ' icon-plus-add';
+    }
+
+    buttonEle.appendChild(document.createTextNode(` ${one.domain} `));
+    buttonEle.appendChild(closeEle);
+    buttonEle.appendChild(autoMergeEle);
     listEle.appendChild(buttonEle);
   }
   if (!listEle.firstChild) {
-    const divEle = document.createElement('div');
-    divEle.innerHTML = 'Empty';
-    divEle.className = 'empty-wrapper';
-    listEle.appendChild(divEle);
+    const emptyEle = document.createElement('div');
+    emptyEle.innerHTML = 'Empty';
+    emptyEle.className = 'empty-wrapper';
+    listEle.appendChild(emptyEle);
   }
 }
 
@@ -124,5 +152,8 @@ function renderList () {
   }
   gist.init(option);
   cookieArray = JSON.parse(await gist.pull());
+  autoMergeSet = await storage.getAutoMergeSet();
+  autoMergeSet = new Set(cookieArray.filter(one => autoMergeSet.has(one.domain)).map(one => one.domain));
+  await storage.setAutoMergeSet(autoMergeSet);
   renderList();
 })();

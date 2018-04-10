@@ -21,12 +21,19 @@
     "default_popup": "popup.html"
   },
   "options_page": "options.html",
+  "background": {
+    "scripts": [
+      "autoMerge.bundle.js"
+    ],
+    "persistent": false
+  },
   "permissions": [
     "cookies",
     "storage",
-    "\u003Call_urls\u003E",
-    "tabs"
+    "<all_urls>",
+    "tabs",
+    "notifications",
+    "alarms"
   ],
-  "update_url": "https://raw.githubusercontent.com/Andiedie/sync-my-cookie/master/UpdateManifest.xml",
   "manifest_version": 2
 }
