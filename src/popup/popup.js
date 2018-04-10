@@ -149,6 +149,7 @@ function renderList () {
 }
 
 (async () => {
+  pushBtn.disabled = true;
   option = await storage.load();
   if (!option.token || !option.gistid || !option.secret) {
     pushBtn.disabled = true;
@@ -161,4 +162,5 @@ function renderList () {
   autoMergeSet = new Set(cookieArray.filter(one => autoMergeSet.has(one.domain)).map(one => one.domain));
   await storage.setAutoMergeSet(autoMergeSet);
   renderList();
+  pushBtn.disabled = false;
 })();
