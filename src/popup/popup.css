@@ -109,3 +109,10 @@ body {
 .auto-merge:hover {
   background-color: var(--success-hover) !important;
 }
+
+.help {
+  cursor: pointer;
+  font-size: 30px;
+  text-decoration-line: none;
+  color: black;
+}

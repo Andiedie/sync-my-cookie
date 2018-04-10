@@ -139,6 +139,11 @@ function renderList () {
     const emptyEle = document.createElement('div');
     emptyEle.innerHTML = 'Empty';
     emptyEle.className = 'empty-wrapper';
+    const helpEle = document.createElement('a');
+    helpEle.className = 'iconfont icon-bangzhu help';
+    helpEle.setAttribute('href', 'https://github.com/Andiedie/sync-my-cookie/blob/master/README.md');
+    helpEle.setAttribute('target', '_blank');
+    emptyEle.appendChild(helpEle);
     listEle.appendChild(emptyEle);
   }
 }

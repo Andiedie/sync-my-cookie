@@ -3,6 +3,7 @@ import storage from '@/utils/storage.js';
 import swal from 'sweetalert2';
 import '@/style/button.css';
 import '@/options/options.css';
+import '@/style/iconfont.css';
 const tokenInput = document.getElementById('token');
 const gistidInput = document.getElementById('gistid');
 const secretInput = document.getElementById('secret');

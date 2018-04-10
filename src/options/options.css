@@ -41,3 +41,8 @@ body {
   font-size: 24px;
   outline: none;
 }
+.help {
+  cursor: pointer;
+  text-decoration-line: none;
+  color: black;
+}
