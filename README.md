@@ -157,10 +157,6 @@ SyncMyCookie guarantees that your cookies are safe during transmission and stora
 
 ## 5.1. Configure Security
 
-这个插件并不是将你的Cookie**分享**给所有人，而是同步给使用**相同配置**的终端。
-
-因此为了保证你的Cookie安全，请不要随意透露你的配置。
-
 SyncMyCookie does not **share** your cookies with everyone, but it synchronizes with devices that use **the same configuration**.
 
 Therefore, to ensure the safety of your cookies, please do not disclose your configuration.
