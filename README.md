@@ -4,7 +4,7 @@
 
 Sync My Cookie is an extension that syncs cookies between multiple browsers.
 
-<!-- more -->
+For safety issues, read [5. Security](https://github.com/Andiedie/sync-my-cookie/blob/master/README.md#5-security)
 
 # 1. Install
 
@@ -149,12 +149,28 @@ Copy the configuration of these page completely to the other browser's SyncMyCoo
 
 This allows you to synchronize cookies across multiple browsers.
 
+# 5. Security
 
+Since cookie is your extremely important security certificate, please use this extension very carefully.
 
+SyncMyCookie guarantees that your cookies are safe during transmission and storage, but you still need to pay attention to the following points.
 
+## 5.1. Configure Security
 
+这个插件并不是将你的Cookie**分享**给所有人，而是同步给使用**相同配置**的终端。
 
+因此为了保证你的Cookie安全，请不要随意透露你的配置。
 
+SyncMyCookie does not **share** your cookies with everyone, but it synchronizes with devices that use **the same configuration**.
 
+Therefore, to ensure the safety of your cookies, please do not disclose your configuration.
 
+## 5.2. GAT Security
 
+SyncMyCookie guarantees that only Gist scope of GAT will be used. However, to prevent potential security issues, please give Gist permission only when generating GAT.
+
+## 5.3. Potential Risks
+
+In theory, multiple devices using the same cookie can achieve simultaneous use of some services, but this is related to the service provider's detection mechanism.
+
+Therefore, using this extension for account sharing, the risk is **uncertain**.
