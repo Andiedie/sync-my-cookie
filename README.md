@@ -107,11 +107,14 @@ This shows that the merging is effective.
 
 Hover over the record you want to delete and click the delete button on the right.
 
-## 3.4. Auto-Merging
+## 3.4. Auto-Sync
 
-It is annoying to manually merge cookies every time, so the SyncMyCookie provides **auto-merging** feature.
+Manually pushing or merging cookies every time is annoying, so SyncMyCookie provide **auto-sync** feature.
 
-Auto-merging: you can set certain records to be automatically merged. This way, whenever you open a new browser window, SyncMyCookie will automatically merge the cookies for you.
+Auto-Sync: You can set certain records as *Auto-Sync*. Auto-Sync is divided into two phases: automatic uploading and automatic merging.
+
+- Automatic uploading: Each time these records' cookies are changed, the extension will automatically upload these cookies when appropriate.
+- Automatic merging: Every time you open a new browser window, the extension automatically merges the cookies for these recordes for you.
 
 ### Enable
 
@@ -129,7 +132,11 @@ When you open a new browser window, auto-merging will start up and notify you wh
 
 ![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/62414781.jpg)
 
+### Migrating from an Old Version
 
+The **auto-sync** feature is only supported since **1.0.2**, so if you have previously used **1.0.1** or earlier, the plugin will only provide automatic merging functionality.
+
+To support automatic uploading, you need to **clear all records and upload them again**.
 
 ## 4. Multi-device Synchronization
 
