@@ -10,7 +10,7 @@ module.exports = {
   entry: {
     popup: resolve('src/popup/popup.js'),
     options: resolve('src/options/options.js'),
-    autoMerge: resolve('src/background/autoMerge.js')
+    background: resolve('src/background/background.js')
   },
   output: {
     path: resolve('dist'),

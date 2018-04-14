@@ -1,24 +1,9 @@
 export default {
-  async export () {
-    return this.getAll({ url: await this.getCurrentUrl() });
-  },
-
-  import (cookieArray) {
+  setAll (cookieArray) {
     for (const fullCookie of cookieArray) {
       const cookie = cookieForCreationFromFullCookie(fullCookie);
       chrome.cookies.set(cookie);
     }
-  },
-
-  async getCurrentUrl () {
-    return new Promise((resolve, reject) => {
-      chrome.tabs.query({
-        active: true,
-        currentWindow: true
-      }, function (tabs) {
-        resolve(tabs[0].url);
-      });
-    });
   },
 
   async getAll (details) {

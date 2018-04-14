@@ -102,11 +102,11 @@ body {
   text-align: center;
 }
 
-.auto-merge {
+.auto-sync {
   background-color: var(--success) !important;
 }
 
-.auto-merge:hover {
+.auto-sync:hover {
   background-color: var(--success-hover) !important;
 }
 

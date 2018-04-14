@@ -10,7 +10,7 @@ const settingBtn = document.getElementById('setting');
 const listEle = document.getElementById('list');
 let option;
 let cookieArray = [];
-let autoMergeSet = new Set();
+let autoSyncSet = new Set();
 
 const ask = async (txt) => {
   return (await swal({
@@ -26,11 +26,12 @@ settingBtn.onclick = () => {
 pushBtn.onclick = async () => {
   try {
     pushBtn.disabled = true;
-    const array = await cookie.export();
+    const url = await getCurrentUrl();
+    const array = await cookie.getAll({ url });
     if (array.length === 0) {
       swal('No cookie for current domain');
     } else {
-      const domain = require('url').parse(await cookie.getCurrentUrl()).hostname;
+      const domain = require('url').parse(url).hostname;
       const duplicatedIndex = cookieArray.findIndex(one => one.domain === domain);
       let askMsg = duplicatedIndex >= 0
         ? `Cookies for "${domain}" already exists. Replace them with these ${array.length} ones?`
@@ -39,6 +40,7 @@ pushBtn.onclick = async () => {
         if (duplicatedIndex >= 0) cookieArray.splice(duplicatedIndex, 1);
         cookieArray.unshift({
           domain,
+          url,
           cookies: array
         });
         await gist.push(JSON.stringify(cookieArray));
@@ -60,7 +62,7 @@ async function merge (e) {
       return swal('Merged');
     }
     if (await ask(`Merge ${one.cookies.length} cookies for "${one.domain}"?`)) {
-      cookie.import(one.cookies);
+      cookie.setAll(one.cookies);
       swal('Merged');
     }
   } catch (err) {
@@ -75,9 +77,9 @@ async function remove (e) {
     const one = cookieArray[this.parentNode.cookie_index];
     if (await ask(`Remove ${one.cookies.length} cookies for "${one.domain}"?`)) {
       cookieArray.splice(this.parentNode.cookie_index, 1);
-      autoMergeSet.delete(one.domain);
+      autoSyncSet.delete(one.domain);
       await gist.push(JSON.stringify(cookieArray));
-      await storage.setAutoMergeSet(autoMergeSet);
+      await storage.setAutoSyncSet(autoSyncSet);
       swal('Deleted');
       renderList();
     }
@@ -88,19 +90,19 @@ async function remove (e) {
   }
 }
 
-async function toggleAutoMerge (e) {
+async function toggleAutoSync (e) {
   e.stopPropagation();
   try {
     const one = cookieArray[this.parentNode.cookie_index];
-    this.parentNode.classList.toggle('auto-merge');
+    this.parentNode.classList.toggle('auto-sync');
     this.classList.toggle('icon-plus-minus');
     this.classList.toggle('icon-plus-add');
-    if (autoMergeSet.has(one.domain)) {
-      autoMergeSet.delete(one.domain);
+    if (autoSyncSet.has(one.domain)) {
+      autoSyncSet.delete(one.domain);
     } else {
-      autoMergeSet.add(one.domain);
+      autoSyncSet.add(one.domain);
     }
-    await storage.setAutoMergeSet(autoMergeSet);
+    await storage.setAutoSyncSet(autoSyncSet);
   } catch (err) {
     swal(err.response ? err.response.data.message : err.message);
   }
@@ -119,20 +121,20 @@ function renderList () {
     closeEle.className = 'iconfont icon-guanbi radius abosulte-right';
     closeEle.onclick = remove;
 
-    const autoMergeEle = document.createElement('i');
-    autoMergeEle.className = 'radius abosulte-left iconfont';
-    autoMergeEle.onclick = toggleAutoMerge;
+    const autoSyncEle = document.createElement('i');
+    autoSyncEle.className = 'radius abosulte-left iconfont';
+    autoSyncEle.onclick = toggleAutoSync;
 
-    if (autoMergeSet.has(one.domain)) {
-      buttonEle.className += ' auto-merge';
-      autoMergeEle.className += ' icon-plus-minus';
+    if (autoSyncSet.has(one.domain)) {
+      buttonEle.className += ' auto-sync';
+      autoSyncEle.className += ' icon-plus-minus';
     } else {
-      autoMergeEle.className += ' icon-plus-add';
+      autoSyncEle.className += ' icon-plus-add';
     }
 
     buttonEle.appendChild(document.createTextNode(` ${one.domain} `));
     buttonEle.appendChild(closeEle);
-    buttonEle.appendChild(autoMergeEle);
+    buttonEle.appendChild(autoSyncEle);
     listEle.appendChild(buttonEle);
   }
   if (!listEle.firstChild) {
@@ -148,6 +150,17 @@ function renderList () {
   }
 }
 
+async function getCurrentUrl () {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }, function (tabs) {
+      resolve(tabs[0].url);
+    });
+  });
+};
+
 (async () => {
   pushBtn.disabled = true;
   option = await storage.load();
@@ -158,9 +171,9 @@ function renderList () {
   }
   gist.init(option);
   cookieArray = JSON.parse(await gist.pull());
-  autoMergeSet = await storage.getAutoMergeSet();
-  autoMergeSet = new Set(cookieArray.filter(one => autoMergeSet.has(one.domain)).map(one => one.domain));
-  await storage.setAutoMergeSet(autoMergeSet);
+  autoSyncSet = await storage.getAutoSyncSet();
+  autoSyncSet = new Set(cookieArray.filter(one => autoSyncSet.has(one.domain)).map(one => one.domain));
+  await storage.setAutoSyncSet(autoSyncSet);
   renderList();
   pushBtn.disabled = false;
 })();

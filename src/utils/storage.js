@@ -15,18 +15,18 @@ export default {
     });
   },
 
-  async setAutoMergeSet (autoMergeSet) {
+  async setAutoSyncSet (autoSyncSet) {
     return new Promise((resolve, reject) => {
       chrome.storage.local.set({
-        autoMergeSet: JSON.stringify([...autoMergeSet])
+        autoSyncSet: JSON.stringify([...autoSyncSet])
       }, resolve);
     });
   },
 
-  async getAutoMergeSet () {
+  async getAutoSyncSet () {
     return new Promise((resolve, reject) => {
-      chrome.storage.local.get(['autoMergeSet'], ({ autoMergeSet }) => {
-        resolve(new Set(JSON.parse(autoMergeSet || '[]')));
+      chrome.storage.local.get(['autoSyncSet'], ({ autoSyncSet }) => {
+        resolve(new Set(JSON.parse(autoSyncSet || '[]')));
       });
     });
   }

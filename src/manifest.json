@@ -1,6 +1,6 @@
 {
   "name": "SyncMyCookie",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Synchronize all your cookies for specific web site across chrome instances with gist.",
   "icons": {
     "16": "img/icon16.png",
@@ -23,7 +23,7 @@
   "options_page": "options.html",
   "background": {
     "scripts": [
-      "autoMerge.bundle.js"
+      "background.bundle.js"
     ],
     "persistent": false
   },
