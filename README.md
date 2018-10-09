@@ -17,7 +17,7 @@ Source code can be obtained directly from my [GitHub repository](https://github.
 
 # 2. Configuration
 
-In order to be able to share cookies between multiple devices, SyncMyCookie encrypts your cookies in [Gist](https://gist.github.com/). So you should have a [GitHub](http://github.com/) account。
+In order to be able to share cookies between multiple devices, SyncMyCookie encrypts your cookies in [Gist](https://gist.github.com/). So you should have a [GitHub](https://github.com/) account。
 
 ## 2.1. Generate GitHub Access Token
 
@@ -27,33 +27,33 @@ Steps：
 
 1. Description
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/40685073.jpg)
+![](assets/40685073.jpg)
 
 This `description` is insignificant. You can fill in anything you like. But **SyncMyCookie** is recommended to remind you this GAT is being used by this extension.
 
 2. Scopes
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/94211156.jpg)
+![](assets/94211156.jpg)
 
 **SyncMyCookie  only requires Gist scope**, so please do not check other unnecessary permissions to ensure your account security.
 
 3. Generate
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/45349467.jpg)
+![](assets/45349467.jpg)
 
 Click `Generate` button and you will see the newly created GAT.
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/44094273.jpg)
+![](assets/44094273.jpg)
 
 ATTENTION: **You won't be able to see it again**. Please keep it properly, otherwise it can only be regenerated.
 
 ## 2.2. Configure Extension 
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/17362904.jpg)
+![](assets/17362904.jpg)
 
 Right click on SyncMyCookie  and click `Options`.
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/64016825.jpg)
+![](assets/64016825.jpg)
 
 Enter the the newly created GAT into the first line. The second line is the secret key used to encrypt the cookie. You can enter anything you like.
 
@@ -65,17 +65,17 @@ Just ignore the third line and click `Save`.
 
 Click the SyncMyCookie and click `Push`in the pop-up page.
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/59415464.jpg)
+![](assets/59415464.jpg)
 
 Click `OK`，cookies for **current page** encrypted and uploaded. The newly added record will be inserted into the list.
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/27757234.jpg)
+![](assets/27757234.jpg)
 
 ### Replace
 
 Under the same hostname, uploaded cookies will overwrite previous records.
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/1484769.jpg)
+![](assets/1484769.jpg)
 
 
 
@@ -83,7 +83,7 @@ Under the same hostname, uploaded cookies will overwrite previous records.
 
 To use the previously saved cookies, just click on the corresponding item in the list.
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/19342447.jpg)
+![](assets/19342447.jpg)
 
 Click `OK`, and previously saved cookies will be **merged **into browser.
 
@@ -93,7 +93,7 @@ Merging means that cookies with the same name will be overwrite and other cookie
 
 You can clear cookies first: press `F12` on current page, select `Application`, right-click the items in left column, and click `Clear`.
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/82499319.jpg)
+![](assets/82499319.jpg)
 
 After cleaning, refresh the current page and you will find that you have **logged out**.
 
@@ -103,40 +103,31 @@ This shows that the merging is effective.
 
 ## 3.3. Remove Record
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/35264211.jpg)
+![](assets/35264211.jpg)
 
 Hover over the record you want to delete and click the delete button on the right.
 
-## 3.4. Auto-Sync
+## 3.4. Auto-Merge
 
-Manually pushing or merging cookies every time is annoying, so SyncMyCookie provide **auto-sync** feature.
+Manually merging cookies every time is annoying, so SyncMyCookie provides *Auto-Merge* feature.
 
-Auto-Sync: You can set certain records as *Auto-Sync*. Auto-Sync is divided into two phases: automatic uploading and automatic merging.
-
-- Automatic uploading: Each time these records' cookies are changed, the extension will automatically upload these cookies when appropriate.
-- Automatic merging: Every time you open a new browser window, the extension automatically merges the cookies for these recordes for you.
+**Auto-Merge**: You can set certain records as *Auto-Merge*. Every time you open a new browser window, the extension automatically merges the cookies for these recordes for you.
 
 ### Enable
 
-Hover over the record that needs to enable auto-merging and click the `+` button on the right.
+Hover over the record that needs to enable *Auto-Merge* and click the `+` button on the left.
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/10265037.jpg)
+![](assets/10265037.jpg)
 
-Records enabled auto-merging will show different colors. For example, `github.com` and `www.google.com.hk` in the figure below enable auto-merging.
+Records enabled *Auto-Merge* will show a different color. For example, `github.com` and `www.google.com.hk` in the figure below enable *Auto-Merge*.
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/58473151.jpg)
+![](assets/58473151.jpg)
 
 ### Notification
 
-When you open a new browser window, auto-merging will start up and notify you which records have been auto merged.
+When you open a new browser window, *Auto-Merge* will start up and notify you which records have been merged.
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/62414781.jpg)
-
-### Migrating from an Old Version
-
-The **auto-sync** feature is only supported since **1.0.2**, so if you have previously used **1.0.1** or earlier, the plugin will only provide automatic merging functionality.
-
-To support automatic uploading, you need to **clear all records and upload them again**.
+![](assets/62414781.jpg)
 
 ## 4. Multi-device Synchronization
 
@@ -144,13 +135,13 @@ To synchronize cookies between multiple devices, you must make SyncMyCookie on d
 
 ## 4.1. Automatic configuration
 
-If you are using the Chrome browser and you have already logged in your Google account, Chrome on your devices will automatically sync the configuration (but will not synchronize the *auto-merging* setting). So you don't need to configure manually.
+If you are using the Chrome browser and you have already logged in your Google account, Chrome on your devices will automatically sync the configuration (but will not synchronize the *Auto-Merge* setting). So you don't need to configure manually.
 
 ## 4.2. Manual configuration
 
 Open SyncMyCookie options page.
 
-![](http://ocphk5wc7.bkt.clouddn.com//18-4-10/53699529.jpg)
+![](assets/53699529.jpg)
 
 Copy the configuration of these page completely to the other browser's SyncMyCookie options page.
 
