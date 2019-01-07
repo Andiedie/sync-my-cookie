@@ -1,11 +1,8 @@
 /node_modules
+/.vscode
 
 /build/*
 !/build/.gitkeep
-/dev/*
-!/dev/options.html
-!/dev/popup.html
-!/dev/backgournd.js
 
 .DS_Store
 .env.local

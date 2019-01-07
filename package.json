@@ -7,7 +7,8 @@
   "author": "Andie <zchangan@163.com>",
   "license": "MIT",
   "scripts": {
-    "build": "NODE_ENV=production node scripts/build.js",
+    "build": "yarn clean && node ./scripts/copyFiles.js && webpack",
+    "dev": "node ./scripts/copyFiles.js && webpack --watch",
     "clean": "rm -rf build/*"
   },
   "devDependencies": {
@@ -23,16 +24,20 @@
     "@types/webpack": "^4.4.22",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.0",
     "fs-extra": "^7.0.1",
     "html-webpack-plugin": "^3.2.0",
     "html-webpack-template": "^6.2.0",
-    "progress-bar-webpack-plugin": "^1.11.0",
+    "postcss-flexbugs-fixes": "^4.1.0",
+    "postcss-loader": "^3.0.0",
+    "postcss-preset-env": "^6.5.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "source-map-loader": "^0.2.4",
+    "style-loader": "^0.23.1",
     "tslint": "^5.12.0",
     "tslint-react": "^3.6.0",
     "typescript": "^3.2.2",
-    "webpack": "^4.28.3"
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.1"
   }
 }
