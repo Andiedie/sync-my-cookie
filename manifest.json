@@ -1,0 +1,33 @@
+{
+  "name": "SyncMyCookie",
+  "version": "2.0.0",
+  "description": "A Chrome extension to synchronize cookies.",
+  "icons": {
+    "16": "icon/icon16.png",
+    "48": "icon/icon48.png",
+    "128": "icon/icon128.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "icon/icon16.png",
+      "48": "icon/icon48.png",
+      "128": "icon/icon128.png"
+    },
+    "default_title": "SyncMyCookie",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "permissions": [
+    "cookies",
+    "storage",
+    "<all_urls>",
+    "tabs"
+  ],
+  "manifest_version": 2
+}
