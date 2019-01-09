@@ -1,5 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = [
   create('./src/popup.tsx'),
@@ -21,8 +23,14 @@ function create(file) {
       title: 'SyncMyCookie'
     }));
   }
+  if (isProduction) {
+    plugins.push(new MiniCssExtractPlugin({
+      filename: '[name].[contenthash:8].css',
+      chunkFilename: '[name].[contenthash:8].chunk.css',
+    }));
+  }
   return {
-    mode: 'production',
+    mode: isProduction ? 'production' : 'development',
     entry: file,
     output: {
       filename: `${name}.js`,
@@ -36,13 +44,22 @@ function create(file) {
         {
           test: /\.tsx?$/,
           use: [
-            'babel-loader',
-            'awesome-typescript-loader'
+            { loader: 'babel-loader' },
+            {
+              loader: 'awesome-typescript-loader',
+              options: {
+                silent: isProduction,
+              }
+            },
           ]
         },
         {
           test: /.scss$/,
           use: [
+            isProduction ?
+            {
+              loader: MiniCssExtractPlugin.loader,
+            } :
             { loader: 'style-loader' },
             {
               loader: 'css-loader',

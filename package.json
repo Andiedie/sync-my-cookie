@@ -7,8 +7,9 @@
   "author": "Andie <zchangan@163.com>",
   "license": "MIT",
   "scripts": {
-    "build": "yarn clean && node ./scripts/copyFiles.js && webpack",
-    "dev": "node ./scripts/copyFiles.js && webpack --watch",
+    "build": "yarn clean && node ./scripts/copyFiles.js && NODE_ENV=production webpack",
+    "dev:chrome": "node ./scripts/copyFiles.js && NODE_ENV=production  webpack --watch",
+    "dev:web": "webpack-dev-server",
     "clean": "rm -rf build/*"
   },
   "devDependencies": {
@@ -27,6 +28,7 @@
     "fs-extra": "^7.0.1",
     "html-webpack-plugin": "^3.2.0",
     "html-webpack-template": "^6.2.0",
+    "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
     "postcss-flexbugs-fixes": "^4.1.0",
     "postcss-loader": "^3.0.0",
@@ -41,6 +43,7 @@
     "tslint-react": "^3.6.0",
     "typescript": "^3.2.2",
     "webpack": "^4.28.3",
-    "webpack-cli": "^3.2.1"
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14"
   }
 }
