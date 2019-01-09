@@ -1,0 +1,72 @@
+@import '../../global.scss';
+
+.wrapper {
+  height: 300px;
+  position: relative;
+  padding: 0 25px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+
+  .placeholder {
+    text-align: center;
+    color: #545454;
+    font-size: 15pt;
+  }
+
+  .domain {
+    text-align: center;
+    color: $Primary;
+    font-size: 35pt;
+    height: 75px;
+    line-height: 75px;
+  }
+
+  .sliders {
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10px 0;
+    .one {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .description {
+        font-size: 16pt;
+        flex-grow: 1;
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .buttons {
+    height: 135px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10px 0;
+  }
+}
+
+.secret {
+  position: relative;
+  .setting {
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+}
+
+.secret:hover {
+  .setting {
+    opacity: 1;
+  }
+  .upload {
+    opacity: 0;
+  }
+}
+

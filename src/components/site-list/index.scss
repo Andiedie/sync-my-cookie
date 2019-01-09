@@ -1,0 +1,35 @@
+.wrapper {
+  box-sizing: content-box;
+  height: 150px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 25px;
+  background-color: #e6ebf3;
+  overflow: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+
+  .pointer {
+    $triangleSize: 15px;
+    width: 0; 
+    height: 0; 
+    position: absolute;
+    top: 0;
+    align-self: center;
+    border-left: $triangleSize solid transparent;
+    border-right: $triangleSize solid transparent;
+    border-top: $triangleSize solid white;
+  }
+
+  .site {
+    margin-bottom: 20px;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0px;  /* remove scrollbar space */
+  background: transparent;  /* optional: just make scrollbar invisible */
+}

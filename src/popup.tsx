@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+import Popup from './components/popup';
+import './popup.scss';
 
 ReactDom.render(
-  <h1>Popup</h1>,
+  <Popup />,
   document.getElementById('root'),
 );

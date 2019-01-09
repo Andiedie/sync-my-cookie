@@ -1,0 +1,54 @@
+@import '../../global.scss';
+
+.wrapper {
+  $borderSize: 5px;
+  height: 32px + $borderSize * 2;
+  box-sizing: border-box;
+  border: $borderSize solid #bdc0ca;
+  background-color: #bdc0ca;
+  border-radius: 400px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  cursor: pointer;
+  transition: background-color .2s, border-color .2s;
+
+  &:hover {
+    @extend .active;
+  }
+
+  .img {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+  }
+
+  .domain {
+    font-size: 14pt;
+  }
+
+  .close {
+    height: 32px;
+    width: 32px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: $Secondary;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+}
+
+.active {
+  background-color: $Secondary;
+  border-color: $Secondary;
+
+  .close {
+    opacity: 1;
+  }
+}
