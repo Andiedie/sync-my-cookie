@@ -23,7 +23,7 @@ function create(file) {
   }
   return {
     mode: 'production',
-    entry: ['@babel/polyfill', file],
+    entry: file,
     output: {
       filename: `${name}.js`,
       path: path.resolve(__dirname, './build'),
@@ -41,14 +41,14 @@ function create(file) {
           ]
         },
         {
-          test: /.css$/,
+          test: /.scss$/,
           use: [
             { loader: 'style-loader' },
             {
               loader: 'css-loader',
               options: {
                 modules: true,
-                importLoaders: 1,
+                importLoaders: 2,
                 localIdentName: '[name]__[local]__[hash:base64:5]',
               },
             },
@@ -66,7 +66,8 @@ function create(file) {
                   }),
                 ],
               },
-            }
+            },
+            { loader: 'sass-loader' }
           ],
         },
       ],
