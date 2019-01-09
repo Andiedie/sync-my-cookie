@@ -4,6 +4,7 @@
       "quotemark": [true, "single"],
       "no-empty": [true, "allow-empty-functions"],
       "no-var-requires": false,
-      "trailing-comma": [true, {"multiline": "always", "singleline": "never"}]
+      "trailing-comma": [true, {"multiline": "always", "singleline": "never"}],
+      "interface-name": false
   }
 }
