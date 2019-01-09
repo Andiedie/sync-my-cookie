@@ -1,14 +1,24 @@
 import React, { Component } from 'react';
 const style = require('./index.scss');
 import Console from '../console';
-import SiteList from '../site-list';
+import Domains from '../domain-list';
 
-class Popup extends Component {
+interface State {
+  domainList: string[];
+}
+
+class Popup extends Component<{}, State> {
+  public constructor(prop: {}) {
+    super(prop);
+    this.state = {
+      domainList: ['115.com', 'github.com', 'bilibili.com', 'iqiyi.com'],
+    };
+  }
   public render() {
     return (
       <div className={style.wrapper}>
-        <Console domain={'115.com'} />
-        <SiteList siteList={['115.com', 'github.com', 'bilibili.com', 'iqiyi.com', 'bangumi.tv']} />
+        <Console />
+        <Domains domains={this.state.domainList} />
       </div>
     );
   }

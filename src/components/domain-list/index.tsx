@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
 const style = require('./index.scss');
-import Site from '../site';
+import Domain from '../domain';
 
 interface Prop {
-  siteList: string[];
+  domains: string[];
 }
 
-class SiteList extends Component<Prop> {
+class DomainList extends Component<Prop> {
   public render() {
     return (
       <div className={style.wrapper}>
         <div className={style.pointer} />
-        {this.renderList(this.props.siteList)}
+        {this.renderList(this.props.domains)}
       </div>
     );
   }
-  private renderList = (siteList: string[]) => {
-    return siteList.map((domain, index) => {
+  private renderList = (domains: string[]) => {
+    return domains.map((domain, index) => {
       return (
-        <Site
+        <Domain
           key={domain}
-          className={style.site}
+          className={style.domain}
           domain={domain}
           active={index === 0}
         />
@@ -29,4 +29,4 @@ class SiteList extends Component<Prop> {
   }
 }
 
-export default SiteList;
+export default DomainList;

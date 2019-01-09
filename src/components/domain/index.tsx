@@ -8,7 +8,7 @@ interface Prop {
   active?: boolean;
 }
 
-class Site extends Component<Prop> {
+class Domain extends Component<Prop> {
   public render() {
     return (
       <div className={this.props.className}>
@@ -16,7 +16,7 @@ class Site extends Component<Prop> {
           <img
             className={style.img}
             src={`https://${this.props.domain}/favicon.ico`}
-            alt='site icon'
+            alt='domain icon'
             onError={this.handleImageError}
           />
           <span className={style.domain}>
@@ -34,4 +34,4 @@ class Site extends Component<Prop> {
   }
 }
 
-export default Site;
+export default Domain;

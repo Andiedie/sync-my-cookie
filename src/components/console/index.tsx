@@ -5,17 +5,25 @@ import Slider from '../slider';
 const UploadCloud = require('react-feather/dist/icons/upload-cloud').default;
 const DownloadCloud = require('react-feather/dist/icons/download-cloud').default;
 const Settings = require('react-feather/dist/icons/settings').default;
+import { getCurrentTabUrl } from '../../utils/chrome';
+import { getDomain } from '../../utils/util';
 
-interface Prop {
-  domain?: string;
+interface State {
+  domain: string;
 }
 
-class Console extends Component<Prop> {
+class Console extends Component<{}, State> {
+  public constructor(props: {}) {
+    super(props);
+    this.state = {
+      domain: '',
+    };
+  }
   public render() {
-    if (this.props.domain) {
+    if (this.state.domain) {
       return (
         <div className={style.wrapper}>
-          <div className={style.domain}>{this.props.domain}</div>
+          <div className={style.domain}>{this.state.domain}</div>
           <div className={style.sliders}>
             <div className={style.one}>
               <div className={style.secret}>
@@ -40,10 +48,16 @@ class Console extends Component<Prop> {
     } else {
       return (
         <div className={style.wrapper}>
-          <div className={style.placeholder}>Please select a domain below.</div>
+          <div className={style.placeholder}>Loading</div>
         </div>
       );
     }
+  }
+  public async componentDidMount() {
+    const url = await getCurrentTabUrl();
+    this.setState({
+      domain: getDomain(url),
+    });
   }
 }
 

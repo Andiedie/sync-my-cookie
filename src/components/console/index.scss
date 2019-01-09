@@ -2,7 +2,6 @@
 
 .wrapper {
   height: 300px;
-  position: relative;
   padding: 0 25px;
   background-color: white;
   display: flex;
@@ -14,6 +13,7 @@
     text-align: center;
     color: #545454;
     font-size: 15pt;
+    margin: auto;
   }
 
   .domain {
