@@ -19,9 +19,10 @@
   .domain {
     text-align: center;
     color: $Primary;
-    font-size: 35pt;
     height: 75px;
     line-height: 75px;
+    align-self: center;
+    width: 80%;
   }
 
   .sliders {

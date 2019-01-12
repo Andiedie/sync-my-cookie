@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
+
 const style = require('./index.scss');
+
+import { getCurrentTabUrl } from '../../utils/chrome';
+import { getDomain } from '../../utils/util';
 import Button from '../button';
 import Slider from '../slider';
+
 const UploadCloud = require('react-feather/dist/icons/upload-cloud').default;
 const DownloadCloud = require('react-feather/dist/icons/download-cloud').default;
 const Settings = require('react-feather/dist/icons/settings').default;
-import { getCurrentTabUrl } from '../../utils/chrome';
-import { getDomain } from '../../utils/util';
+const { Textfit } = require('react-textfit');
 
 interface State {
   domain: string;
@@ -23,7 +27,12 @@ class Console extends Component<{}, State> {
     if (this.state.domain) {
       return (
         <div className={style.wrapper}>
-          <div className={style.domain}>{this.state.domain}</div>
+          <Textfit
+            className={style.domain}
+            max={40}
+          >
+            {this.state.domain}
+          </Textfit>
           <div className={style.sliders}>
             <div className={style.one}>
               <div className={style.secret}>
