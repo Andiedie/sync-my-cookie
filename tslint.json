@@ -5,6 +5,8 @@
       "no-empty": [true, "allow-empty-functions"],
       "no-var-requires": false,
       "trailing-comma": [true, {"multiline": "always", "singleline": "never"}],
-      "interface-name": false
+      "interface-name": false,
+      "object-literal-sort-keys": false,
+      "jsx-no-multiline-js": false
   }
 }

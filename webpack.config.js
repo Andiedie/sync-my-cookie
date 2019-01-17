@@ -5,7 +5,6 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = [
   create('./src/popup.tsx'),
-  create('./src/options.tsx'),
   create('./src/background.ts'),
 ];
 
@@ -45,12 +44,7 @@ function create(file) {
           test: /\.tsx?$/,
           use: [
             { loader: 'babel-loader' },
-            {
-              loader: 'awesome-typescript-loader',
-              options: {
-                silent: isProduction,
-              }
-            },
+            { loader: 'awesome-typescript-loader' },
           ]
         },
         {

@@ -4,25 +4,26 @@ import Domain from '../domain';
 
 interface Prop {
   domains: string[];
+  currentDomain: string;
 }
 
 class DomainList extends Component<Prop> {
   public render() {
     return (
       <div className={style.wrapper}>
-        <div className={style.pointer} />
-        {this.renderList(this.props.domains)}
+        {this.props.domains[0] === this.props.currentDomain && <div className={style.pointer} />}
+        {this.renderList(this.props.domains, this.props.currentDomain)}
       </div>
     );
   }
-  private renderList = (domains: string[]) => {
-    return domains.map((domain, index) => {
+  private renderList = (domains: string[], active: string) => {
+    return domains.map((domain) => {
       return (
         <Domain
           key={domain}
           className={style.domain}
           domain={domain}
-          active={index === 0}
+          active={domain === active}
         />
       );
     });

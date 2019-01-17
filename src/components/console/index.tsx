@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 const style = require('./index.scss');
 
-import { getCurrentTabUrl } from '../../utils/chrome';
-import { getDomain } from '../../utils/util';
 import Button from '../button';
 import Slider from '../slider';
 
@@ -12,26 +10,25 @@ const DownloadCloud = require('react-feather/dist/icons/download-cloud').default
 const Settings = require('react-feather/dist/icons/settings').default;
 const { Textfit } = require('react-textfit');
 
-interface State {
+interface Prop {
   domain: string;
+  autoPush: boolean;
+  autoMerge: boolean;
+  canMerge: boolean;
+  onMerge: () => void;
+  onPush: () => void;
 }
 
-class Console extends Component<{}, State> {
-  public constructor(props: {}) {
-    super(props);
-    this.state = {
-      domain: '',
-    };
-  }
+class Console extends Component<Prop> {
   public render() {
-    if (this.state.domain) {
+    if (this.props.domain) {
       return (
         <div className={style.wrapper}>
           <Textfit
             className={style.domain}
             max={40}
           >
-            {this.state.domain}
+            {this.props.domain}
           </Textfit>
           <div className={style.sliders}>
             <div className={style.one}>
@@ -40,17 +37,23 @@ class Console extends Component<{}, State> {
                 <Settings className={[style.setting, style.icon].join(' ')} />
               </div>
               <span className={style.description}>Auto Push</span>
-              <Slider on={true} />
+              <Slider on={this.props.autoPush} />
             </div>
             <div className={style.one}>
               <DownloadCloud className={style.icon} />
               <span className={style.description}>Auto Merge</span>
-              <Slider on={false} />
+              <Slider on={this.props.autoMerge} />
             </div>
           </div>
           <div className={style.buttons}>
-            <Button mode='fill'>Merge</Button>
-            <Button mode='outline'>Push</Button>
+            <Button mode='fill' onClick={this.props.onPush}>Push</Button>
+            <Button
+              mode='outline'
+              disable={!this.props.canMerge}
+              onClick={this.props.onMerge}
+            >
+              Merge
+            </Button>
           </div>
         </div>
       );
@@ -61,12 +64,6 @@ class Console extends Component<{}, State> {
         </div>
       );
     }
-  }
-  public async componentDidMount() {
-    const url = await getCurrentTabUrl();
-    this.setState({
-      domain: getDomain(url),
-    });
   }
 }
 
