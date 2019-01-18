@@ -6,6 +6,7 @@ import Button from '../button/button';
 import { Kevast } from 'kevast';
 import { KevastChromeSync } from 'kevast-chrome';
 import { KevastGist } from 'kevast-gist';
+import * as keys from '../../utils/keys';
 
 interface Prop {
   onSet: () => void;
@@ -37,7 +38,7 @@ class Setting extends Component<Prop, State> {
         <div>
           <input
             type='text'
-            name='token'
+            name={keys.TOKEN_KEY}
             placeholder='GitHub Access Token'
             value={this.state.token}
             onChange={this.handleChange}
@@ -47,7 +48,7 @@ class Setting extends Component<Prop, State> {
         <div>
           <input
             type='text'
-            name='password'
+            name={keys.PASSWORD_KEY}
             placeholder='Password'
             value={this.state.password}
             onChange={this.handleChange}
@@ -59,7 +60,7 @@ class Setting extends Component<Prop, State> {
           <div>
             <input
               type='text'
-              name='gistId'
+              name={keys.GIST_ID_KEY}
               placeholder='Gist ID'
               value={this.state.gistId}
               onChange={this.handleChange}
@@ -69,7 +70,7 @@ class Setting extends Component<Prop, State> {
           <div>
             <input
               type='text'
-              name='filename'
+              name={keys.FILE_NAME_KEY}
               placeholder='File Name'
               value={this.state.filename}
               onChange={this.handleChange}
@@ -89,10 +90,10 @@ class Setting extends Component<Prop, State> {
   }
   public async componentDidMount() {
     this.setState({
-      token: await this.chromeSync.get('token') || '',
-      password: await this.chromeSync.get('password') || '',
-      gistId: await this.chromeSync.get('gistId') || '',
-      filename: await this.chromeSync.get('filename') || '',
+      token: await this.chromeSync.get(keys.TOKEN_KEY) || '',
+      password: await this.chromeSync.get(keys.PASSWORD_KEY) || '',
+      gistId: await this.chromeSync.get(keys.GIST_ID_KEY) || '',
+      filename: await this.chromeSync.get(keys.FILE_NAME_KEY) || '',
     });
   }
   private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,10 +116,10 @@ class Setting extends Component<Prop, State> {
       return;
     }
     const bulk = [
-      {key: 'token', value: this.state.token},
-      {key: 'password', value: this.state.password},
-      {key: 'gistId', value: await kevastGist.getGistId()},
-      {key: 'filename', value: await kevastGist.getFilename()},
+      {key: keys.TOKEN_KEY, value: this.state.token},
+      {key: keys.PASSWORD_KEY, value: this.state.password},
+      {key: keys.GIST_ID_KEY, value: await kevastGist.getGistId()},
+      {key: keys.FILE_NAME_KEY, value: await kevastGist.getFilename()},
     ];
     await this.chromeSync.bulkSet(bulk);
     this.props.onSet();

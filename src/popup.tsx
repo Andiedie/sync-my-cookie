@@ -12,9 +12,8 @@ import { KevastChromeLocal, KevastChromeSync } from 'kevast-chrome';
 import { KevastEncrypt } from 'kevast-encrypt';
 import { KevastGist } from 'kevast-gist';
 import * as chromeUtils from './utils/chrome';
-import { getDomain } from './utils/util';
-
-const DOMAIN_LIST_KEY = '__DOMAIN_LIST_';
+import * as keys from './utils/keys';
+import { getDomain } from './utils/utils';
 
 interface State {
   isSetting: boolean;
@@ -26,12 +25,10 @@ interface State {
 
 class Popup extends Component<{}, State> {
   private gist: Kevast;
-  private chromeLocal: Kevast;
   private chromeSync: Kevast;
   public constructor(prop: {}) {
     super(prop);
     this.gist = new Kevast(new KevastChromeLocal());
-    this.chromeLocal = new Kevast(new KevastChromeLocal());
     this.chromeSync = new Kevast(new KevastChromeSync());
     this.state = {
       isSetting: false,
@@ -99,7 +96,7 @@ class Popup extends Component<{}, State> {
     domainList = domainList.filter((domain) => domain !== this.state.currentDomain);
     domainList.unshift(this.state.currentDomain);
     await this.gist.bulkSet([
-      {key: DOMAIN_LIST_KEY, value: JSON.stringify(domainList)},
+      {key: keys.DOMAIN_LIST_KEY, value: JSON.stringify(domainList)},
       {key: this.state.currentDomain, value: JSON.stringify(cookies)},
     ]);
     this.setState({
@@ -117,20 +114,20 @@ class Popup extends Component<{}, State> {
   }
 
   private async initGist() {
-    const token = await this.chromeSync.get('token');
-    const password = await this.chromeSync.get('password');
+    const token = await this.chromeSync.get(keys.TOKEN_KEY);
+    const password = await this.chromeSync.get(keys.PASSWORD_KEY);
     if (!token || !password) {
       this.setState({
         isSetting: true,
       });
       return;
     }
-    const gistId = await this.chromeSync.get('gistId');
-    const filename = await this.chromeSync.get('filename');
+    const gistId = await this.chromeSync.get(keys.GIST_ID_KEY);
+    const filename = await this.chromeSync.get(keys.FILE_NAME_KEY);
     this.gist.add(new KevastGist(token, gistId, filename));
     this.gist.use(new KevastEncrypt(password));
     this.setState({
-      domainList: JSON.parse(await this.gist.get(DOMAIN_LIST_KEY) || '[]'),
+      domainList: JSON.parse(await this.gist.get(keys.DOMAIN_LIST_KEY) || '[]'),
     });
   }
 }

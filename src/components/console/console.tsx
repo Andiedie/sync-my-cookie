@@ -4,7 +4,7 @@ const style = require('./console.scss');
 
 import { Kevast } from 'kevast';
 import { KevastChromeLocal } from 'kevast-chrome';
-import { generateKey } from '../../utils/util';
+import { autoPushMergeKey } from '../../utils/keys';
 import Button from '../button/button';
 import Slider from '../slider/slider';
 
@@ -100,8 +100,8 @@ class Console extends Component<Prop, State> {
   public async componentWillReceiveProps(nextProps: Prop) {
     if (nextProps.domain !== this.props.domain) {
       this.setState({
-        autoPush: await this.chromeLocal.get(generateKey(nextProps.domain, 'push')) === 'true',
-        autoMerge: await this.chromeLocal.get(generateKey(nextProps.domain, 'merge')) === 'true',
+        autoPush: await this.chromeLocal.get(autoPushMergeKey(nextProps.domain, 'push')) === 'true',
+        autoMerge: await this.chromeLocal.get(autoPushMergeKey(nextProps.domain, 'merge')) === 'true',
       });
     }
   }
@@ -119,8 +119,8 @@ class Console extends Component<Prop, State> {
         break;
     }
     await this.chromeLocal.bulkSet([
-      {key: generateKey(this.props.domain, 'push'), value: autoPush.toString()},
-      {key: generateKey(this.props.domain, 'merge'), value: autoMerge.toString()},
+      {key: autoPushMergeKey(this.props.domain, 'push'), value: autoPush.toString()},
+      {key: autoPushMergeKey(this.props.domain, 'merge'), value: autoMerge.toString()},
     ]);
     this.setState({
       autoPush,
