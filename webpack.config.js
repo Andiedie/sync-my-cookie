@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = [
@@ -12,17 +13,16 @@ module.exports = [
 function create(file) {
   const parsed = path.parse(file);
   const name = parsed.name;
-  const ext = parsed.ext;
-  const plugins = [];
-  if (ext === '.tsx') {
-    plugins.push(new HtmlWebpackPlugin({
+  const plugins = [
+    new HtmlWebpackPlugin({
       filename: `${name}.html`,
       inject: false,
       template: require('html-webpack-template'),
       appMountId: 'root',
       title: 'SyncMyCookie'
-    }));
-  }
+    }),
+    new LodashModuleReplacementPlugin(),
+  ];
   if (isProduction) {
     plugins.push(new MiniCssExtractPlugin({
       filename: '[name].[contenthash:8].css',
