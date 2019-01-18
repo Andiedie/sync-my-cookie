@@ -114,8 +114,8 @@ class Setting extends Component<Prop, State> {
     await setting.set({
       token: this.state.token,
       password: this.state.password,
-      gistId: this.state.gistId,
-      filename: this.state.filename,
+      gistId: await kevastGist.getGistId(),
+      filename: await kevastGist.getFilename(),
     });
     this.props.onSet();
   }

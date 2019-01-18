@@ -8,14 +8,12 @@ import Domains from './components/domain-list/domain-list';
 import Setting from './components/setting/setting';
 
 import * as chromeUtils from './utils/chrome';
-import * as keys from './utils/keys';
 import { gist } from './utils/store';
 import { getDomain } from './utils/utils';
 
 interface State {
   isSetting: boolean;
   currentDomain: string;
-  currentUrl: string;
   domainList: string[];
   isRunning: boolean;
 }
@@ -26,7 +24,6 @@ class Popup extends Component<{}, State> {
     this.state = {
       isSetting: false,
       currentDomain: '',
-      currentUrl: '',
       domainList: [],
       isRunning: false,
     };
@@ -59,7 +56,6 @@ class Popup extends Component<{}, State> {
     const url = await chromeUtils.getCurrentTabUrl();
     this.setState({
       currentDomain: getDomain(url),
-      currentUrl: url,
     });
 
     await this.initGist();
@@ -84,16 +80,19 @@ class Popup extends Component<{}, State> {
 
   private handlePush = async () => {
     this.setState({ isRunning: true });
-    const cookies = await chromeUtils.exportCookies(this.state.currentUrl);
-    let domainList = [...this.state.domainList];
-    domainList = domainList.filter((domain) => domain !== this.state.currentDomain);
-    domainList.unshift(this.state.currentDomain);
-    await gist.set(domainList, this.state.currentDomain, cookies);
+    const cookies = await chromeUtils.exportCookies(this.state.currentDomain);
+    if (cookies.length === 0) {
+      alert('There is no cookie under this domain');
+    }
+    const domainList = await gist.set([{
+      domain: this.state.currentDomain,
+      cookies,
+    }], this.state.domainList);
+    alert('Pushed');
     this.setState({
       domainList,
       isRunning: false,
     });
-    alert('Pushed');
   }
 
   private handleSet = async () => {
@@ -104,8 +103,8 @@ class Popup extends Component<{}, State> {
   }
 
   private async initGist() {
-    const result = await gist.init();
-    if (!result) {
+    const ready = await gist.init();
+    if (!ready) {
       this.setState({
         isSetting: true,
       });

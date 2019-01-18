@@ -2,18 +2,28 @@ import { Kevast } from 'kevast';
 import { KevastChromeLocal, KevastChromeSync } from 'kevast-chrome';
 import { KevastEncrypt } from 'kevast-encrypt';
 import { KevastGist } from 'kevast-gist';
+import { Pair } from 'kevast/dist/Pair';
 import * as keys from './keys';
+import { add2Front } from './utils';
 
 const chromeLocal = new Kevast(new KevastChromeLocal());
 const chromeSync = new Kevast(new KevastChromeSync());
-const gistStore = new Kevast(new KevastChromeLocal());
+const gistStore = new Kevast();
 
-const keyTable: any = {
-  token: keys.TOKEN_KEY,
-  password: keys.PASSWORD_KEY,
-  gistId: keys.GIST_ID_KEY,
-  filename: keys.FILE_NAME_KEY,
-};
+function getKey(name: string): string {
+  switch (name) {
+    case 'token':
+      return keys.TOKEN_KEY;
+    case 'password':
+      return keys.PASSWORD_KEY;
+    case 'gistId':
+      return keys.GIST_ID_KEY;
+    case 'filename':
+      return keys.FILE_NAME_KEY;
+    default:
+      throw new Error('Unknown');
+  }
+}
 
 export const setting = {
   async set(config: {
@@ -24,7 +34,7 @@ export const setting = {
   }) {
     const bulk = Object.entries(config).map((entry) => {
       return {
-        key: keyTable[entry[0]],
+        key: getKey(entry[0]),
         value: entry[1],
       };
     });
@@ -33,8 +43,8 @@ export const setting = {
     }
     await chromeSync.bulkSet(bulk);
   },
-  get(key: 'token' | 'password' | 'gistId' | 'filename'): Promise<string | undefined> {
-    return chromeSync.get(keyTable(key));
+  async get(key: 'token' | 'password' | 'gistId' | 'filename'): Promise<string | undefined> {
+    return chromeSync.get(getKey(key));
   },
 };
 
@@ -72,10 +82,19 @@ export const gist = {
   async getCookies(domain: string): Promise<chrome.cookies.SetDetails[]> {
     return JSON.parse(await gistStore.get(domain) || '[]');
   },
-  async set(domainList: string[], domain: string, cookies: chrome.cookies.SetDetails[]) {
-    await gistStore.bulkSet([
-      {key: keys.DOMAIN_LIST_KEY, value: JSON.stringify(domainList)},
-      {key: domain, value: JSON.stringify(cookies)},
-    ]);
+  async set(list: Array<{domain: string, cookies: chrome.cookies.SetDetails[]}>,
+            domainList?: string[]): Promise<string[]> {
+    if (!domainList) {
+      domainList = await gist.getDomainList();
+    }
+    const bulk: Pair[] = [];
+    let newDomainList = [...domainList];
+    for (const {domain, cookies} of list) {
+      newDomainList = add2Front(newDomainList, domain);
+      bulk.push({key: domain, value: JSON.stringify(cookies)});
+    }
+    bulk.push({key: keys.DOMAIN_LIST_KEY, value: JSON.stringify(newDomainList)});
+    await gistStore.bulkSet(bulk);
+    return newDomainList;
   },
 };
