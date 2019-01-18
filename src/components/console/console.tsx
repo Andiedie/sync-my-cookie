@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-
 const style = require('./console.scss');
 
-import { Kevast } from 'kevast';
-import { KevastChromeLocal } from 'kevast-chrome';
-import { autoPushMergeKey } from '../../utils/keys';
 import Button from '../button/button';
 import Slider from '../slider/slider';
+
+import { auto } from '../../utils/store';
 
 const UploadCloud = require('react-feather/dist/icons/upload-cloud').default;
 const DownloadCloud = require('react-feather/dist/icons/download-cloud').default;
@@ -27,10 +25,8 @@ interface State {
 }
 
 class Console extends Component<Prop, State> {
-  private chromeLocal: Kevast;
   public constructor(prop: Prop) {
     super(prop);
-    this.chromeLocal = new Kevast(new KevastChromeLocal());
     this.state = {
       autoPush: false,
       autoMerge: false,
@@ -99,10 +95,8 @@ class Console extends Component<Prop, State> {
   }
   public async componentWillReceiveProps(nextProps: Prop) {
     if (nextProps.domain !== this.props.domain) {
-      this.setState({
-        autoPush: await this.chromeLocal.get(autoPushMergeKey(nextProps.domain, 'push')) === 'true',
-        autoMerge: await this.chromeLocal.get(autoPushMergeKey(nextProps.domain, 'merge')) === 'true',
-      });
+      const state = await auto.get(nextProps.domain);
+      this.setState(state);
     }
   }
   private handleTrigger = async (name: string | undefined) => {
@@ -118,14 +112,12 @@ class Console extends Component<Prop, State> {
       default:
         break;
     }
-    await this.chromeLocal.bulkSet([
-      {key: autoPushMergeKey(this.props.domain, 'push'), value: autoPush.toString()},
-      {key: autoPushMergeKey(this.props.domain, 'merge'), value: autoMerge.toString()},
-    ]);
-    this.setState({
+    const state = {
       autoPush,
       autoMerge,
-    });
+    };
+    auto.set(this.props.domain, state);
+    this.setState(state);
   }
 }
 

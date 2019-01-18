@@ -3,10 +3,8 @@ const style = require('./setting.scss');
 
 import Button from '../button/button';
 
-import { Kevast } from 'kevast';
-import { KevastChromeSync } from 'kevast-chrome';
 import { KevastGist } from 'kevast-gist';
-import * as keys from '../../utils/keys';
+import { setting } from '../../utils/store';
 
 interface Prop {
   onSet: () => void;
@@ -21,10 +19,8 @@ export interface State {
 }
 
 class Setting extends Component<Prop, State> {
-  private chromeSync: Kevast;
   public constructor(props: Prop) {
     super(props);
-    this.chromeSync = new Kevast(new KevastChromeSync());
     this.state = {
       token: '',
       password: '',
@@ -38,7 +34,7 @@ class Setting extends Component<Prop, State> {
         <div>
           <input
             type='text'
-            name={keys.TOKEN_KEY}
+            name='token'
             placeholder='GitHub Access Token'
             value={this.state.token}
             onChange={this.handleChange}
@@ -48,7 +44,7 @@ class Setting extends Component<Prop, State> {
         <div>
           <input
             type='text'
-            name={keys.PASSWORD_KEY}
+            name='password'
             placeholder='Password'
             value={this.state.password}
             onChange={this.handleChange}
@@ -60,7 +56,7 @@ class Setting extends Component<Prop, State> {
           <div>
             <input
               type='text'
-              name={keys.GIST_ID_KEY}
+              name='gistId'
               placeholder='Gist ID'
               value={this.state.gistId}
               onChange={this.handleChange}
@@ -70,7 +66,7 @@ class Setting extends Component<Prop, State> {
           <div>
             <input
               type='text'
-              name={keys.FILE_NAME_KEY}
+              name='filename'
               placeholder='File Name'
               value={this.state.filename}
               onChange={this.handleChange}
@@ -90,10 +86,10 @@ class Setting extends Component<Prop, State> {
   }
   public async componentDidMount() {
     this.setState({
-      token: await this.chromeSync.get(keys.TOKEN_KEY) || '',
-      password: await this.chromeSync.get(keys.PASSWORD_KEY) || '',
-      gistId: await this.chromeSync.get(keys.GIST_ID_KEY) || '',
-      filename: await this.chromeSync.get(keys.FILE_NAME_KEY) || '',
+      token: await setting.get('token') || '',
+      password: await setting.get('password') || '',
+      gistId: await setting.get('gistId') || '',
+      filename: await setting.get('filename') || '',
     });
   }
   private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,13 +111,12 @@ class Setting extends Component<Prop, State> {
       alert(err.message);
       return;
     }
-    const bulk = [
-      {key: keys.TOKEN_KEY, value: this.state.token},
-      {key: keys.PASSWORD_KEY, value: this.state.password},
-      {key: keys.GIST_ID_KEY, value: await kevastGist.getGistId()},
-      {key: keys.FILE_NAME_KEY, value: await kevastGist.getFilename()},
-    ];
-    await this.chromeSync.bulkSet(bulk);
+    await setting.set({
+      token: this.state.token,
+      password: this.state.password,
+      gistId: this.state.gistId,
+      filename: this.state.filename,
+    });
     this.props.onSet();
   }
 }

@@ -7,12 +7,9 @@ import Console from './components/console/console';
 import Domains from './components/domain-list/domain-list';
 import Setting from './components/setting/setting';
 
-import { Kevast } from 'kevast';
-import { KevastChromeLocal, KevastChromeSync } from 'kevast-chrome';
-import { KevastEncrypt } from 'kevast-encrypt';
-import { KevastGist } from 'kevast-gist';
 import * as chromeUtils from './utils/chrome';
 import * as keys from './utils/keys';
+import { gist } from './utils/store';
 import { getDomain } from './utils/utils';
 
 interface State {
@@ -24,12 +21,8 @@ interface State {
 }
 
 class Popup extends Component<{}, State> {
-  private gist: Kevast;
-  private chromeSync: Kevast;
   public constructor(prop: {}) {
     super(prop);
-    this.gist = new Kevast(new KevastChromeLocal());
-    this.chromeSync = new Kevast(new KevastChromeSync());
     this.state = {
       isSetting: false,
       currentDomain: '',
@@ -83,7 +76,7 @@ class Popup extends Component<{}, State> {
 
   private handleMerge = async () => {
     this.setState({ isRunning: true });
-    const savedCookie = JSON.parse(await this.gist.get(this.state.currentDomain) || '[]');
+    const savedCookie = await gist.getCookies(this.state.currentDomain);
     await chromeUtils.importCookies(savedCookie);
     alert('Merged');
     this.setState({ isRunning: false });
@@ -95,10 +88,7 @@ class Popup extends Component<{}, State> {
     let domainList = [...this.state.domainList];
     domainList = domainList.filter((domain) => domain !== this.state.currentDomain);
     domainList.unshift(this.state.currentDomain);
-    await this.gist.bulkSet([
-      {key: keys.DOMAIN_LIST_KEY, value: JSON.stringify(domainList)},
-      {key: this.state.currentDomain, value: JSON.stringify(cookies)},
-    ]);
+    await gist.set(domainList, this.state.currentDomain, cookies);
     this.setState({
       domainList,
       isRunning: false,
@@ -114,20 +104,15 @@ class Popup extends Component<{}, State> {
   }
 
   private async initGist() {
-    const token = await this.chromeSync.get(keys.TOKEN_KEY);
-    const password = await this.chromeSync.get(keys.PASSWORD_KEY);
-    if (!token || !password) {
+    const result = await gist.init();
+    if (!result) {
       this.setState({
         isSetting: true,
       });
       return;
     }
-    const gistId = await this.chromeSync.get(keys.GIST_ID_KEY);
-    const filename = await this.chromeSync.get(keys.FILE_NAME_KEY);
-    this.gist.add(new KevastGist(token, gistId, filename));
-    this.gist.use(new KevastEncrypt(password));
     this.setState({
-      domainList: JSON.parse(await this.gist.get(keys.DOMAIN_LIST_KEY) || '[]'),
+      domainList: await gist.getDomainList(),
     });
   }
 }

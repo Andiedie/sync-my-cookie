@@ -1,5 +1,5 @@
-export function autoPushMergeKey(domain: string, direction: 'push' | 'merge') {
-  return `${domain}_AUTO_${direction.toUpperCase()}`;
+export function autoKey(domain: string, direction: 'push' | 'merge') {
+  return `__AUTO_${direction.toUpperCase()}_${domain}__`;
 }
 
 export const DOMAIN_LIST_KEY = '__DOMAIN_LIST__';
