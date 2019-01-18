@@ -1,6 +1,12 @@
-body {
-  padding: 0;
-  margin: 0;
-  border: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+.wrapper {
+  width: 400px;
+  height: 450px;
+}
+
+.settingWrapper {
+  height: 100%;
+  padding: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

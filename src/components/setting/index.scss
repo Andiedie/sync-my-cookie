@@ -1,6 +1,6 @@
 .wrapper {
   height: 100%;
-  padding: 25px;
+  padding: 0 25px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,7 +25,7 @@
     padding: 7px 14px;
     transition: border-color .2s;
     flex-grow: 1;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 
     &::placeholder {
       color: rgba(0, 0, 0, .4);
@@ -38,5 +38,12 @@
     &:focus::placeholder {
       color: rgba(0, 0, 0, .8);
     }
+  }
+
+  img {
+    height: 100px;
+    width: 100px;
+    align-self: center;
+    margin-bottom: 20px;
   }
 }

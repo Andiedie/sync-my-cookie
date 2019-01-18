@@ -5,6 +5,7 @@ import Domain from '../domain';
 interface Prop {
   domains: string[];
   currentDomain: string;
+  isRunning: boolean;
 }
 
 class DomainList extends Component<Prop> {

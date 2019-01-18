@@ -1,12 +1,11 @@
-.wrapper {
-  width: 400px;
-  height: 450px;
-}
-
-.settingWrapper {
+.flex {
   height: 100%;
-  padding: 25px;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  .wrapper {
+    height: 600px;
+    width: 500px;
+  }
 }

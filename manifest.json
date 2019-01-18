@@ -16,6 +16,7 @@
     "default_title": "SyncMyCookie",
     "default_popup": "popup.html"
   },
+  "options_page": "options.html",
   "background": {
     "scripts": [
       "background.js"

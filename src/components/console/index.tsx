@@ -17,6 +17,7 @@ interface Prop {
   canMerge: boolean;
   onMerge: () => void;
   onPush: () => void;
+  isRunning: boolean;
 }
 
 class Console extends Component<Prop> {
@@ -37,19 +38,25 @@ class Console extends Component<Prop> {
                 <Settings className={[style.setting, style.icon].join(' ')} />
               </div>
               <span className={style.description}>Auto Push</span>
-              <Slider on={this.props.autoPush} />
+              <Slider on={this.props.autoPush}/>
             </div>
             <div className={style.one}>
               <DownloadCloud className={style.icon} />
               <span className={style.description}>Auto Merge</span>
-              <Slider on={this.props.autoMerge} />
+              <Slider on={this.props.autoMerge}/>
             </div>
           </div>
           <div className={style.buttons}>
-            <Button mode='fill' onClick={this.props.onPush}>Push</Button>
+            <Button
+              mode='fill'
+              onClick={this.props.onPush}
+              disable={this.props.isRunning}
+            >
+              Push
+            </Button>
             <Button
               mode='outline'
-              disable={!this.props.canMerge}
+              disable={!this.props.canMerge || this.props.isRunning}
               onClick={this.props.onMerge}
             >
               Merge

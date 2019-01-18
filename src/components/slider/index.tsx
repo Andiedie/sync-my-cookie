@@ -8,12 +8,12 @@ interface Prop {
 class Slider extends Component<Prop> {
   public render() {
     return (
-    <div
-      className={[style.wrapper, this.props.on && style.on].join(' ')}
-      onClick={this.handleClick}
-    >
-      <div className={style.slider}/>
-    </div>
+      <div
+        className={[style.wrapper, this.props.on && style.on].join(' ')}
+        onClick={this.handleClick}
+      >
+        <div className={style.slider}/>
+      </div>
     );
   }
   public handleClick = () => {

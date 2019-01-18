@@ -5,6 +5,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = [
   create('./src/popup.tsx'),
+  create('./src/options.tsx'),
   create('./src/background.ts'),
 ];
 

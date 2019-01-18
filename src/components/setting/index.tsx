@@ -4,36 +4,41 @@ const style = require('./index.scss');
 import Button from '../button';
 
 import { Kevast } from 'kevast';
-import { KevastChromeLocal } from 'kevast-chrome';
+import { KevastChromeSync } from 'kevast-chrome';
 import { KevastGist } from 'kevast-gist';
 
 interface Prop {
-  onSet: (options: Options) => void;
+  onSet: () => void;
 }
 
-export interface Options {
+export interface State {
   token: string;
   password: string;
   gistId?: string;
   filename?: string;
+  isRunning: boolean;
 }
 
-class Setting extends Component<Prop, Options> {
+class Setting extends Component<Prop, State> {
+  private chromeSync: Kevast;
   public constructor(props: Prop) {
     super(props);
+    this.chromeSync = new Kevast(new KevastChromeSync());
     this.state = {
       token: '',
       password: '',
+      isRunning: false,
     };
   }
   public render() {
     return (
       <div className={style.wrapper}>
+        <img src='/icon/icon128.png'/>
         <div>
           <input
             type='text'
             name='token'
-            placeholder='token'
+            placeholder='GitHub Access Token'
             value={this.state.token}
             onChange={this.handleChange}
             className={style.token}
@@ -43,7 +48,7 @@ class Setting extends Component<Prop, Options> {
           <input
             type='text'
             name='password'
-            placeholder='password'
+            placeholder='Password'
             value={this.state.password}
             onChange={this.handleChange}
             className={style.password}
@@ -55,7 +60,7 @@ class Setting extends Component<Prop, Options> {
             <input
               type='text'
               name='gistId'
-              placeholder='gistId'
+              placeholder='Gist ID'
               value={this.state.gistId}
               onChange={this.handleChange}
               className={style.gistId}
@@ -65,7 +70,7 @@ class Setting extends Component<Prop, Options> {
             <input
               type='text'
               name='filename'
-              placeholder='filename'
+              placeholder='File Name'
               value={this.state.filename}
               onChange={this.handleChange}
               className={style.filename}
@@ -74,7 +79,7 @@ class Setting extends Component<Prop, Options> {
         </details>
         <Button
           mode='fill'
-          disable={!this.state.token || !this.state.password}
+          disable={!this.state.token || !this.state.password || this.state.isRunning}
           onClick={this.handleClick}
         >
           Settings
@@ -82,15 +87,26 @@ class Setting extends Component<Prop, Options> {
       </div>
     );
   }
+  public async componentDidMount() {
+    this.setState({
+      token: await this.chromeSync.get('token') || '',
+      password: await this.chromeSync.get('password') || '',
+      gistId: await this.chromeSync.get('gistId') || '',
+      filename: await this.chromeSync.get('filename') || '',
+    });
+  }
   private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target;
-    const value = target.value;
+    const value = target.value as any;
     const name = target.name;
     this.setState({
       [name]: value,
-    } as Pick<Options, keyof Options>);
+    } as Pick<State, keyof State>);
   }
   private handleClick = async () => {
+    this.setState({
+      isRunning: true,
+    });
     const kevastGist = new KevastGist(this.state.token, this.state.gistId, this.state.filename);
     try {
       await kevastGist.init();
@@ -98,14 +114,14 @@ class Setting extends Component<Prop, Options> {
       alert(err.message);
       return;
     }
-    const kevast = new Kevast(new KevastChromeLocal());
-    await kevast.bulkSet([
+    const bulk = [
       {key: 'token', value: this.state.token},
       {key: 'password', value: this.state.password},
       {key: 'gistId', value: await kevastGist.getGistId()},
       {key: 'filename', value: await kevastGist.getFilename()},
-    ]);
-    this.props.onSet(this.state);
+    ];
+    await this.chromeSync.bulkSet(bulk);
+    this.props.onSet();
   }
 }
 
