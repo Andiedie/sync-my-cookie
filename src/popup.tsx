@@ -59,6 +59,7 @@ class Popup extends Component<{}, State> {
           domains={this.state.domainList}
           currentDomain={this.state.currentDomain}
           isRunning={this.state.isRunning}
+          onDomainChange={this.handleDomainChange}
         />
       </div>
     );
@@ -73,6 +74,14 @@ class Popup extends Component<{}, State> {
 
     await this.initGist();
     this.setState({ isRunning: false });
+  }
+
+  private handleDomainChange = (domain: string) => {
+    const domainList = [domain, ...this.state.domainList.filter((one) => one !== domain)];
+    this.setState({
+      currentDomain: domain,
+      domainList,
+    });
   }
 
   private handleMerge = async () => {
