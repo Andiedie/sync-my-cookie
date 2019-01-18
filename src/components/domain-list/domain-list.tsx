@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-const style = require('./index.scss');
-import Domain from '../domain';
+const style = require('./domain-list.scss');
+import Domain from '../domain/domain';
 
 interface Prop {
   domains: string[];

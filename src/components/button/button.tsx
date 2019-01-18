@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-const style = require('./index.scss');
+const style = require('./button.scss');
 
 interface Prop {
   mode?: 'outline' | 'fill';

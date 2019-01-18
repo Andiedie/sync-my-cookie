@@ -38,7 +38,28 @@ $Gray: #bdc0ca;
     border-color: darken($Secondary, 10%);
   }
 
-  .switcher {
+  .slider {
     left: $size;
+  }
+}
+
+.disable {
+  transition: unset;
+  cursor: not-allowed;
+
+  background-color: lighten($Gray, 5%);
+  border-color: lighten($Gray, 5%);
+  &:hover {
+    background-color: lighten($Gray, 5%);
+    border-color: lighten($Gray, 5%);
+  }
+}
+
+.disable.on {
+  background-color: lighten($Secondary, 5%);
+  border-color: lighten($Secondary, 5%);
+  &:hover {
+    background-color: lighten($Secondary, 5%);
+    border-color: lighten($Secondary, 5%);
   }
 }

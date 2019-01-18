@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-const style = require('./index.scss');
+const style = require('./domain.scss');
 const X = require('react-feather/dist/icons/x').default;
 
 interface Prop {

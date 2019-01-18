@@ -3,9 +3,9 @@ import ReactDom from 'react-dom';
 const style = require('./popup.scss');
 import './global.scss';
 
-import Console from './components/console';
-import Domains from './components/domain-list';
-import Setting from './components/setting';
+import Console from './components/console/console';
+import Domains from './components/domain-list/domain-list';
+import Setting from './components/setting/setting';
 
 import { Kevast } from 'kevast';
 import { KevastChromeLocal, KevastChromeSync } from 'kevast-chrome';
@@ -20,8 +20,6 @@ interface State {
   isSetting: boolean;
   currentDomain: string;
   currentUrl: string;
-  autoPush: boolean;
-  autoMerge: boolean;
   domainList: string[];
   isRunning: boolean;
 }
@@ -39,8 +37,6 @@ class Popup extends Component<{}, State> {
       isSetting: false,
       currentDomain: '',
       currentUrl: '',
-      autoMerge: false,
-      autoPush: false,
       domainList: [],
       isRunning: false,
     };
@@ -54,8 +50,6 @@ class Popup extends Component<{}, State> {
       <div className={style.wrapper}>
         <Console
           domain={this.state.currentDomain}
-          autoMerge={this.state.autoMerge}
-          autoPush={this.state.autoPush}
           canMerge={this.state.domainList.includes(this.state.currentDomain)}
           onMerge={this.handleMerge}
           onPush={this.handlePush}
@@ -127,8 +121,6 @@ class Popup extends Component<{}, State> {
     this.gist.add(new KevastGist(token, gistId, filename));
     this.gist.use(new KevastEncrypt(password));
     this.setState({
-      autoPush: Boolean(await this.chromeLocal.get(`${this.state.currentDomain}_autoPush`)),
-      autoMerge: Boolean(await this.chromeLocal.get(`${this.state.currentDomain}_autoMerge`)),
       domainList: JSON.parse(await this.gist.get(DOMAIN_LIST_KEY) || '[]'),
     });
   }

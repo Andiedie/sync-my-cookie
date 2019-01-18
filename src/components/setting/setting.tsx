@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-const style = require('./index.scss');
+const style = require('./setting.scss');
 
-import Button from '../button';
+import Button from '../button/button';
 
 import { Kevast } from 'kevast';
 import { KevastChromeSync } from 'kevast-chrome';

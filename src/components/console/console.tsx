@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 
-const style = require('./index.scss');
+const style = require('./console.scss');
 
-import Button from '../button';
-import Slider from '../slider';
+import { Kevast } from 'kevast';
+import { KevastChromeLocal } from 'kevast-chrome';
+import { generateKey } from '../../utils/util';
+import Button from '../button/button';
+import Slider from '../slider/slider';
 
 const UploadCloud = require('react-feather/dist/icons/upload-cloud').default;
 const DownloadCloud = require('react-feather/dist/icons/download-cloud').default;
@@ -12,15 +15,27 @@ const { Textfit } = require('react-textfit');
 
 interface Prop {
   domain: string;
-  autoPush: boolean;
-  autoMerge: boolean;
   canMerge: boolean;
   onMerge: () => void;
   onPush: () => void;
   isRunning: boolean;
 }
 
-class Console extends Component<Prop> {
+interface State {
+  autoPush: boolean;
+  autoMerge: boolean;
+}
+
+class Console extends Component<Prop, State> {
+  private chromeLocal: Kevast;
+  public constructor(prop: Prop) {
+    super(prop);
+    this.chromeLocal = new Kevast(new KevastChromeLocal());
+    this.state = {
+      autoPush: false,
+      autoMerge: false,
+    };
+  }
   public render() {
     if (this.props.domain) {
       return (
@@ -38,12 +53,22 @@ class Console extends Component<Prop> {
                 <Settings className={[style.setting, style.icon].join(' ')} />
               </div>
               <span className={style.description}>Auto Push</span>
-              <Slider on={this.props.autoPush}/>
+              <Slider
+                on={this.state.autoPush}
+                name='AutoPush'
+                trigger={this.handleTrigger}
+                disable={!this.props.canMerge}
+              />
             </div>
             <div className={style.one}>
               <DownloadCloud className={style.icon} />
               <span className={style.description}>Auto Merge</span>
-              <Slider on={this.props.autoMerge}/>
+              <Slider
+                on={this.state.autoMerge}
+                name='AutoMerge'
+                trigger={this.handleTrigger}
+                disable={!this.props.canMerge}
+              />
             </div>
           </div>
           <div className={style.buttons}>
@@ -71,6 +96,36 @@ class Console extends Component<Prop> {
         </div>
       );
     }
+  }
+  public async componentWillReceiveProps(nextProps: Prop) {
+    if (nextProps.domain !== this.props.domain) {
+      this.setState({
+        autoPush: await this.chromeLocal.get(generateKey(nextProps.domain, 'push')) === 'true',
+        autoMerge: await this.chromeLocal.get(generateKey(nextProps.domain, 'merge')) === 'true',
+      });
+    }
+  }
+  private handleTrigger = async (name: string | undefined) => {
+    let autoPush = this.state.autoPush;
+    let autoMerge = this.state.autoMerge;
+    switch (name) {
+      case 'AutoPush':
+        autoPush = !autoPush;
+        break;
+      case 'AutoMerge':
+        autoMerge = !autoMerge;
+        break;
+      default:
+        break;
+    }
+    await this.chromeLocal.bulkSet([
+      {key: generateKey(this.props.domain, 'push'), value: autoPush.toString()},
+      {key: generateKey(this.props.domain, 'merge'), value: autoMerge.toString()},
+    ]);
+    this.setState({
+      autoPush,
+      autoMerge,
+    });
   }
 }
 

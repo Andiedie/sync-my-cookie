@@ -3,7 +3,7 @@ import ReactDom from 'react-dom';
 const style = require('./options.scss');
 import './global.scss';
 
-import Settings from './components/setting';
+import Settings from './components/setting/setting';
 
 class Options extends Component {
   public render() {
