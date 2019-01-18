@@ -9,7 +9,7 @@ import Setting from './components/setting/setting';
 
 import * as chromeUtils from './utils/chrome';
 import { gist } from './utils/store';
-import { getDomain } from './utils/utils';
+import { getDomain, move2Front } from './utils/utils';
 
 interface State {
   isSetting: boolean;
@@ -25,7 +25,7 @@ class Popup extends Component<{}, State> {
       isSetting: false,
       currentDomain: '',
       domainList: [],
-      isRunning: false,
+      isRunning: true,
     };
   }
   public render() {
@@ -54,20 +54,21 @@ class Popup extends Component<{}, State> {
 
   public async componentDidMount() {
     const url = await chromeUtils.getCurrentTabUrl();
-    this.setState({
-      currentDomain: getDomain(url),
-    });
+    const currentDomain = getDomain(url);
+    this.setState((prevState) => ({
+      currentDomain,
+      domainList: move2Front(prevState.domainList, currentDomain),
+    }));
 
     await this.initGist();
     this.setState({ isRunning: false });
   }
 
   private handleDomainChange = (domain: string) => {
-    const domainList = [domain, ...this.state.domainList.filter((one) => one !== domain)];
-    this.setState({
+    this.setState((prevState) => ({
       currentDomain: domain,
-      domainList,
-    });
+      domainList: move2Front(prevState.domainList, domain),
+    }));
   }
 
   private handleMerge = async () => {
@@ -89,10 +90,10 @@ class Popup extends Component<{}, State> {
       cookies,
     }], this.state.domainList);
     alert('Pushed');
-    this.setState({
-      domainList,
+    this.setState((prevState) => ({
+      domainList: move2Front(domainList, prevState.currentDomain),
       isRunning: false,
-    });
+    }));
   }
 
   private handleSet = async () => {
@@ -110,9 +111,10 @@ class Popup extends Component<{}, State> {
       });
       return;
     }
-    this.setState({
-      domainList: await gist.getDomainList(),
-    });
+    const domainList = await gist.getDomainList();
+    this.setState((prevState) => ({
+      domainList: move2Front(domainList, prevState.currentDomain),
+    }));
   }
 }
 

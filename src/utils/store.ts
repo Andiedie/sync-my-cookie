@@ -4,7 +4,6 @@ import { KevastEncrypt } from 'kevast-encrypt';
 import { KevastGist } from 'kevast-gist';
 import { Pair } from 'kevast/dist/Pair';
 import * as keys from './keys';
-import { add2Front } from './utils';
 
 const chromeLocal = new Kevast(new KevastChromeLocal());
 const chromeSync = new Kevast(new KevastChromeSync());
@@ -88,9 +87,9 @@ export const gist = {
       domainList = await gist.getDomainList();
     }
     const bulk: Pair[] = [];
-    let newDomainList = [...domainList];
+    const newDomainList = [...domainList];
     for (const {domain, cookies} of list) {
-      newDomainList = add2Front(newDomainList, domain);
+      newDomainList.push(domain);
       bulk.push({key: domain, value: JSON.stringify(cookies)});
     }
     bulk.push({key: keys.DOMAIN_LIST_KEY, value: JSON.stringify(newDomainList)});

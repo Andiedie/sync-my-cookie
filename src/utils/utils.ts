@@ -11,9 +11,11 @@ export function getDomain(url: string): string {
   }
 }
 
-export function add2Front(array: string[], ele: string): string[] {
+export function move2Front(array: string[], ele: string): string[] {
   let result = [...array];
   result = result.filter((e) => e !== ele);
-  result.unshift(ele);
+  if (result.length < array.length) {
+    result.unshift(ele);
+  }
   return result;
 }
