@@ -3635,10 +3635,10 @@ kevast-gist@^0.1.4:
   dependencies:
     axios "^0.18.0"
 
-kevast@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.npmjs.org/kevast/-/kevast-0.4.2.tgz#ec714a6c32b0a9f270ff25e4d163c3cdf39e2acd"
-  integrity sha512-dxGkBPSBtxkIe/WLgigR8RdAUyYK9hKzqxpF+5EjGW65GuaY+lVEZ7Lwiqio/UPDGpdMdxoYl/bznJ2PhBwMeg==
+kevast@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.npmjs.org/kevast/-/kevast-0.4.3.tgz#6a7b8265b6c6ad875c4e496499b7bd36271fff5a"
+  integrity sha512-rGxbIhtF1ae9iRCVizz+9Ghk9HHMoQM7nc+DhYlS8SnOSS902OEaPr5oXffwUj15vr2hTbbXZ9Vq4+dxAIHsOg==
 
 killable@^1.0.0:
   version "1.0.1"
