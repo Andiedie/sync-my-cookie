@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import './setting.scss';
 const style = require('./setting.module.scss');
 
+import { Modal } from 'antd';
 import { Button, Collapse, Icon, Input, Tooltip } from 'antd';
 
 import { KevastGist } from 'kevast-gist';
-import swal from 'sweetalert';
 import { setting } from '../../utils/store';
 
 interface Prop {
@@ -112,10 +112,9 @@ class Setting extends Component<Prop, State> {
     try {
       await kevastGist.init();
     } catch (err) {
-      swal({
+      Modal.error({
         title: 'Fail',
-        icon: 'error',
-        text: err.message,
+        content: err.message,
       });
       return;
     }

@@ -1,4 +1,5 @@
 $activeColor: #ff7875;
+$hoverColor: #ffa39e;
 .wrapper {
   $borderSize: 5px;
   height: 32px + $borderSize * 2;
@@ -15,8 +16,8 @@ $activeColor: #ff7875;
   transition: background-color .2s, border-color .2s;
 
   &:hover {
-    background-color: #ff4d4f;
-    border-color: #ff4d4f;
+    background-color: $hoverColor;
+    border-color: $hoverColor;
 
     .close {
       opacity: 1;

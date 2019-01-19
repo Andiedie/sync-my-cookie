@@ -16,7 +16,6 @@ interface Prop {
 
 interface State {
   pushLoading: boolean;
-  mergeLoading: boolean;
 }
 
 class Console extends Component<Prop, State> {
@@ -24,7 +23,6 @@ class Console extends Component<Prop, State> {
     super(props);
     this.state = {
       pushLoading: false,
-      mergeLoading: false,
     };
   }
   public render() {
@@ -65,7 +63,7 @@ class Console extends Component<Prop, State> {
           <div className={style.buttons}>
             <Button
               type='primary'
-              onClick={this.props.onPush}
+              onClick={this.handlePush}
               loading={this.state.pushLoading}
               size='large'
             >
@@ -73,9 +71,8 @@ class Console extends Component<Prop, State> {
             </Button>
             <Button
               type='default'
-              onClick={this.props.onPush}
+              onClick={this.props.onMerge}
               disabled={!this.props.canMerge}
-              loading={this.state.mergeLoading}
               size='large'
             >
               Merge
@@ -91,23 +88,24 @@ class Console extends Component<Prop, State> {
       );
     }
   }
-  private handleAutoPushChange = async (checked: boolean) => {
+  private handlePush = async () => {
     this.setState({pushLoading: true});
+    await this.props.onPush();
+    this.setState({pushLoading: false});
+  }
+  private handleAutoPushChange = async (checked: boolean) => {
     const config = {
       autoPush: checked,
       autoMerge: this.props.autoMerge,
     };
     await this.props.onAutoConfigChange(config);
-    this.setState({pushLoading: false});
   }
   private handleAutoMergeChange = async (checked: boolean) => {
-    this.setState({mergeLoading: true});
     const config = {
       autoPush: this.props.autoPush,
       autoMerge: checked,
     };
     this.props.onAutoConfigChange(config);
-    this.setState({mergeLoading: false});
   }
 }
 

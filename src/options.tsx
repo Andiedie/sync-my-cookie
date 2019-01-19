@@ -3,9 +3,8 @@ import ReactDom from 'react-dom';
 const style = require('./options.module.scss');
 import './global.scss';
 
+import { Modal } from 'antd';
 import Settings from './components/setting/setting';
-
-import swal from 'sweetalert';
 
 class Options extends Component {
   public render() {
@@ -17,12 +16,13 @@ class Options extends Component {
       </div>
     );
   }
-  private handleSet = async () => {
-    await swal({
+  private handleSet = () => {
+    Modal.success({
       title: 'Saved',
-      icon: 'success',
+      onOk() {
+        window.close();
+      },
     });
-    window.close();
   }
 }
 
