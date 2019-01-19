@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDom from 'react-dom';
-const style = require('./options.scss');
+const style = require('./options.module.scss');
 import './global.scss';
 
 import Settings from './components/setting/setting';

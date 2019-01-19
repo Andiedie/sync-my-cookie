@@ -1,5 +1,4 @@
-@import '../../global.scss';
-
+$activeColor: #ff7875;
 .wrapper {
   $borderSize: 5px;
   height: 32px + $borderSize * 2;
@@ -16,7 +15,12 @@
   transition: background-color .2s, border-color .2s;
 
   &:hover {
-    @extend .active;
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+
+    .close {
+      opacity: 1;
+    }
   }
 
   .img {
@@ -26,7 +30,8 @@
   }
 
   .domain {
-    font-size: 14pt;
+    font-size: 16px;
+    color: white;
   }
 
   .close {
@@ -38,15 +43,15 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    color: $Secondary;
+    color: $activeColor;
     opacity: 0;
     transition: opacity .2s;
   }
 }
 
 .active {
-  background-color: $Secondary;
-  border-color: $Secondary;
+  background-color: $activeColor;
+  border-color: $activeColor;
 
   .close {
     opacity: 1;

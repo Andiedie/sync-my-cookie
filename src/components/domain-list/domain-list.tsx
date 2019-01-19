@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-const style = require('./domain-list.scss');
+const style = require('./domain-list.module.scss');
 import Domain from '../domain/domain';
 
 interface Prop {
   domains: string[];
   currentDomain: string;
-  isRunning: boolean;
   onDomainChange?: (domain: string) => void;
   onDomainClose?: (domain: string) => void;
 }

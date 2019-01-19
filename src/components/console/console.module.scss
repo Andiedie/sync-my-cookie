@@ -1,5 +1,12 @@
 @import '../../global.scss';
 
+.empty {
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .wrapper {
   height: 300px;
   padding: 0 25px;
@@ -9,20 +16,17 @@
   justify-content: flex-start;
   align-items: stretch;
 
-  .placeholder {
-    text-align: center;
-    color: #545454;
-    font-size: 15pt;
-    margin: auto;
-  }
-
   .domain {
     text-align: center;
-    color: $Primary;
+    color: #0098ff;
     height: 75px;
     line-height: 75px;
     align-self: center;
     width: 80%;
+  }
+
+  .icon {
+    font-size: 20pt;
   }
 
   .sliders {
@@ -60,14 +64,13 @@
     opacity: 0;
     cursor: pointer;
   }
-}
 
-.secret:hover {
-  .setting {
-    opacity: 1;
-  }
-  .upload {
-    opacity: 0;
+  &:hover {
+    .setting {
+      opacity: 1;
+    }
+    .upload {
+      opacity: 0;
+    }
   }
 }
-

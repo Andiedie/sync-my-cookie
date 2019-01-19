@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-const style = require('./domain.scss');
-const X = require('react-feather/dist/icons/x').default;
+const style = require('./domain.module.scss');
 
 interface Prop {
   domain: string;
@@ -33,7 +32,7 @@ class Domain extends Component<Prop> {
             onClick={this.handleClose}
             data-domain={this.props.domain}
           >
-            <X />
+            X
           </div>
         </div>
       </div>

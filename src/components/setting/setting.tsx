@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-const style = require('./setting.scss');
+import './setting.scss';
+const style = require('./setting.module.scss');
 
-import Button from '../button/button';
+import { Button, Collapse, Icon, Input, Tooltip } from 'antd';
 
 import { KevastGist } from 'kevast-gist';
 import swal from 'sweetalert';
@@ -16,7 +17,7 @@ export interface State {
   password: string;
   gistId?: string;
   filename?: string;
-  isRunning: boolean;
+  loading: boolean;
 }
 
 class Setting extends Component<Prop, State> {
@@ -25,62 +26,64 @@ class Setting extends Component<Prop, State> {
     this.state = {
       token: '',
       password: '',
-      isRunning: false,
+      loading: false,
     };
   }
   public render() {
     return (
       <div className={style.wrapper}>
         <img src='/icon/icon128.png'/>
-        <div>
-          <input
-            type='text'
-            name='token'
-            placeholder='GitHub Access Token'
-            value={this.state.token}
-            onChange={this.handleChange}
-            className={style.token}
-          />
-        </div>
-        <div>
-          <input
-            type='text'
+        <Input
+          name='token'
+          placeholder='GitHub Access Token'
+          prefix={<Icon type='github' style={{ color: 'rgba(0,0,0,.25)' }} />}
+          allowClear={true}
+          onChange={this.handleChange}
+          value={this.state.token}
+          className={style.input}
+        />
+        <Tooltip title='NOT your GitHub password, but a key to encrypt your cookies.' placement='topLeft'>
+          <Input
             name='password'
             placeholder='Password'
-            value={this.state.password}
+            prefix={<Icon type='key' style={{ color: 'rgba(0,0,0,.25)' }} />}
+            allowClear={true}
             onChange={this.handleChange}
-            className={style.password}
+            value={this.state.password}
+            className={style.input}
           />
-        </div>
-        <details>
-          <summary>Optional</summary>
-          <div>
-            <input
-              type='text'
+        </Tooltip>
+        <Collapse bordered={false} className={style.collapse}>
+          <Collapse.Panel header='Optional' key='2' className={style.panel}>
+            <Input
               name='gistId'
               placeholder='Gist ID'
-              value={this.state.gistId}
+              prefix={<Icon type='fork' style={{ color: 'rgba(0,0,0,.25)' }} />}
+              allowClear={true}
               onChange={this.handleChange}
-              className={style.gistId}
+              value={this.state.gistId}
+              className={style.input}
             />
-          </div>
-          <div>
-            <input
-              type='text'
+            <Input
               name='filename'
               placeholder='File Name'
-              value={this.state.filename}
+              prefix={<Icon type='file' style={{ color: 'rgba(0,0,0,.25)' }} />}
+              allowClear={true}
               onChange={this.handleChange}
-              className={style.filename}
+              value={this.state.filename}
+              className={[style.input, style.filename].join(' ')}
             />
-          </div>
-        </details>
+          </Collapse.Panel>
+        </Collapse>
         <Button
-          mode='fill'
-          disable={!this.state.token || !this.state.password || this.state.isRunning}
+          type='primary'
+          disabled={!this.state.token || !this.state.password}
           onClick={this.handleClick}
+          block={true}
+          icon='setting'
+          loading={this.state.loading}
         >
-          Settings
+          Set
         </Button>
       </div>
     );
@@ -94,7 +97,7 @@ class Setting extends Component<Prop, State> {
     });
   }
   private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const target = event.target;
+    const target = event.currentTarget;
     const value = target.value as any;
     const name = target.name;
     this.setState({
@@ -103,7 +106,7 @@ class Setting extends Component<Prop, State> {
   }
   private handleClick = async () => {
     this.setState({
-      isRunning: true,
+      loading: true,
     });
     const kevastGist = new KevastGist(this.state.token, this.state.gistId, this.state.filename);
     try {

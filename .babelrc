@@ -1,5 +1,8 @@
 {
-  "plugins": ["lodash"],
+  "plugins": [
+    ["lodash"],
+    ["import", { "libraryName": "antd", "style": true }],
+  ],
   "presets": [
     "@babel/react",
     "@babel/typescript",

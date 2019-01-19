@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDom from 'react-dom';
-const style = require('./popup.scss');
+const style = require('./popup.module.scss');
 import './global.scss';
 
 import Console from './components/console/console';
@@ -41,19 +41,28 @@ class Popup extends Component<{}, State> {
     ) : (
       <div className={style.wrapper}>
         <Console
-          domain={this.state.currentDomain}
-          canMerge={this.state.domainList.includes(this.state.currentDomain)}
-          isRunning={this.state.isRunning}
+          // domain={this.state.currentDomain}
+          // canMerge={this.state.domainList.includes(this.state.currentDomain)}
+          // onMerge={this.handleMerge}
+          // onPush={this.handlePush}
+          // onAutoConfigChange={this.handleAutoConfigChange}
+          // autoPush={this.state.autoPush}
+          // autoMerge={this.state.autoMerge}
+          domain={'github.com'}
+          canMerge={true}
           onMerge={this.handleMerge}
           onPush={this.handlePush}
-          onTrigger={this.handleTrigger}
-          autoPush={this.state.autoPush}
-          autoMerge={this.state.autoMerge}
+          onAutoConfigChange={this.handleAutoConfigChange}
+          autoPush={true}
+          autoMerge={false}
         />
         <Domains
-          domains={this.state.domainList}
-          currentDomain={this.state.currentDomain}
-          isRunning={this.state.isRunning}
+          // domains={this.state.domainList}
+          // currentDomain={this.state.currentDomain}
+          // onDomainChange={this.handleDomainChange}
+          // onDomainClose={this.handleDomainClose}
+          domains={['github.com', 'bilibili.com', 'bangumi.tv', 'gitlab.com', 'taobao.com']}
+          currentDomain={'github.com'}
           onDomainChange={this.handleDomainChange}
           onDomainClose={this.handleDomainClose}
         />
@@ -77,25 +86,9 @@ class Popup extends Component<{}, State> {
     this.setState({ isRunning: false });
   }
 
-  private handleTrigger = async (name: string) => {
-    let autoPush = this.state.autoPush;
-    let autoMerge = this.state.autoMerge;
-    switch (name) {
-      case 'AutoPush':
-        autoPush = !autoPush;
-        break;
-      case 'AutoMerge':
-        autoMerge = !autoMerge;
-        break;
-      default:
-        return;
-    }
-    const state = {
-      autoPush,
-      autoMerge,
-    };
-    await auto.set(this.state.currentDomain, state);
-    this.setState(state);
+  private handleAutoConfigChange = async (config: {autoPush: boolean, autoMerge: boolean}) => {
+    await auto.set(this.state.currentDomain, config);
+    this.setState(config);
   }
 
   private handleDomainClose = async (domain: string) => {

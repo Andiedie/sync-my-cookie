@@ -1,28 +1,32 @@
 import React, { Component } from 'react';
-const style = require('./console.scss');
+const style = require('./console.module.scss');
 
-import Button from '../button/button';
-import Slider from '../slider/slider';
-
-import { auto } from '../../utils/store';
-
-const UploadCloud = require('react-feather/dist/icons/upload-cloud').default;
-const DownloadCloud = require('react-feather/dist/icons/download-cloud').default;
-const Settings = require('react-feather/dist/icons/settings').default;
+import { Button, Icon, Spin, Switch, Tooltip } from 'antd';
 const { Textfit } = require('react-textfit');
 
 interface Prop {
   domain: string;
   canMerge: boolean;
-  isRunning: boolean;
   autoPush: boolean;
   autoMerge: boolean;
   onMerge: () => void;
   onPush: () => void;
-  onTrigger: (name: string) => void;
+  onAutoConfigChange: (config: {autoPush: boolean, autoMerge: boolean}) => void;
 }
 
-class Console extends Component<Prop> {
+interface State {
+  pushLoading: boolean;
+  mergeLoading: boolean;
+}
+
+class Console extends Component<Prop, State> {
+  public constructor(props: Prop) {
+    super(props);
+    this.state = {
+      pushLoading: false,
+      mergeLoading: false,
+    };
+  }
   public render() {
     if (this.props.domain) {
       return (
@@ -36,40 +40,43 @@ class Console extends Component<Prop> {
           <div className={style.sliders}>
             <div className={style.one}>
               <div className={style.secret}>
-                <UploadCloud className={[style.upload, style.icon].join(' ')} />
-                <Settings className={[style.setting, style.icon].join(' ')} />
+                <Icon type='cloud-upload' className={[style.upload, style.icon].join(' ')} />
+                <Tooltip placement='topLeft' title='Configure Auto Push'>
+                  <Icon type='setting' className={[style.setting, style.icon].join(' ')} />
+                </Tooltip>
               </div>
               <span className={style.description}>Auto Push</span>
-              <Slider
-                on={this.props.autoPush}
-                name='AutoPush'
-                onTrigger={this.handleTrigger}
-                disable={!this.props.canMerge}
+              <Switch
+                checked={this.props.autoPush}
+                onChange={this.handleAutoPushChange}
+                disabled={!this.props.canMerge}
               />
             </div>
             <div className={style.one}>
-              <DownloadCloud className={style.icon} />
+              <Icon type='cloud-download' className={style.icon} />
               <span className={style.description}>Auto Merge</span>
-              <Slider
-                on={this.props.autoMerge}
-                name='AutoMerge'
-                onTrigger={this.handleTrigger}
-                disable={!this.props.canMerge}
+              <Switch
+                checked={this.props.autoMerge}
+                onChange={this.handleAutoMergeChange}
+                disabled={!this.props.canMerge}
               />
             </div>
           </div>
           <div className={style.buttons}>
             <Button
-              mode='fill'
+              type='primary'
               onClick={this.props.onPush}
-              disable={this.props.isRunning}
+              loading={this.state.pushLoading}
+              size='large'
             >
               Push
             </Button>
             <Button
-              mode='outline'
-              disable={!this.props.canMerge || this.props.isRunning}
-              onClick={this.props.onMerge}
+              type='default'
+              onClick={this.props.onPush}
+              disabled={!this.props.canMerge}
+              loading={this.state.mergeLoading}
+              size='large'
             >
               Merge
             </Button>
@@ -78,14 +85,29 @@ class Console extends Component<Prop> {
       );
     } else {
       return (
-        <div className={style.wrapper}>
-          <div className={style.placeholder}>Loading</div>
+        <div className={style.empty}>
+          <Spin size='large' />
         </div>
       );
     }
   }
-  private handleTrigger = async (name: string) => {
-    this.props.onTrigger(name);
+  private handleAutoPushChange = async (checked: boolean) => {
+    this.setState({pushLoading: true});
+    const config = {
+      autoPush: checked,
+      autoMerge: this.props.autoMerge,
+    };
+    await this.props.onAutoConfigChange(config);
+    this.setState({pushLoading: false});
+  }
+  private handleAutoMergeChange = async (checked: boolean) => {
+    this.setState({mergeLoading: true});
+    const config = {
+      autoPush: this.props.autoPush,
+      autoMerge: checked,
+    };
+    this.props.onAutoConfigChange(config);
+    this.setState({mergeLoading: false});
   }
 }
 

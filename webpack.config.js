@@ -13,16 +13,19 @@ module.exports = [
 function create(file) {
   const parsed = path.parse(file);
   const name = parsed.name;
+  const ext = parsed.ext;
   const plugins = [
-    new HtmlWebpackPlugin({
+    new LodashModuleReplacementPlugin(),
+  ];
+  if (ext === '.tsx') {
+    plugins.push(new HtmlWebpackPlugin({
       filename: `${name}.html`,
       inject: false,
       template: require('html-webpack-template'),
       appMountId: 'root',
       title: 'SyncMyCookie'
-    }),
-    new LodashModuleReplacementPlugin(),
-  ];
+    }));
+  }
   if (isProduction) {
     plugins.push(new MiniCssExtractPlugin({
       filename: '[name].[contenthash:8].css',
@@ -49,41 +52,75 @@ function create(file) {
           ]
         },
         {
-          test: /.scss$/,
-          use: [
-            isProduction ?
+          test: /\.(scss|sass)$/,
+          exclude: /\.module\.(scss|sass)$/,
+          use: getStyleLoaders(
             {
-              loader: MiniCssExtractPlugin.loader,
-            } :
-            { loader: 'style-loader' },
-            {
-              loader: 'css-loader',
-              options: {
-                modules: true,
-                importLoaders: 2,
-                localIdentName: '[name]__[local]__[hash:base64:5]',
-              },
+              importLoaders: 2,
             },
+            'sass-loader'
+          ),
+        },
+        {
+          test: /\.module\.(scss|sass)$/,
+          use: getStyleLoaders(
             {
-              loader: 'postcss-loader',
-              options: {
-                ident: 'postcss',
-                plugins: () => [
-                  require('postcss-flexbugs-fixes'),
-                  require('postcss-preset-env')({
-                    autoprefixer: {
-                      flexbox: 'no-2009',
-                    },
-                    stage: 3,
-                  }),
-                ],
-              },
+              importLoaders: 2,
+              modules: true,
+              localIdentName: '[name]__[local]__[hash:base64:5]'
             },
-            { loader: 'sass-loader' }
-          ],
+            'sass-loader'
+          ),
+        },
+        {
+          test: /.less$/,
+          use: getStyleLoaders(
+            {
+              importLoaders: 2,
+            },
+            'less-loader',
+            { javascriptEnabled: true },
+          ),
         },
       ],
     },
     plugins,
   };
+};
+
+function getStyleLoaders(cssOptions, preProcessor, preProcessorOptions) {
+  const loaders = [
+    isProduction ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
+    {
+      loader: 'css-loader',
+      options: cssOptions,
+    },
+    {
+      // Options for PostCSS as we reference these options twice
+      // Adds vendor prefixing based on your specified browser support in
+      // package.json
+      loader: 'postcss-loader',
+      options: {
+        // Necessary for external CSS imports to work
+        // https://github.com/facebook/create-react-app/issues/2677
+        ident: 'postcss',
+        plugins: () => [
+          require('postcss-flexbugs-fixes'),
+          require('postcss-preset-env')({
+            autoprefixer: {
+              flexbox: 'no-2009',
+            },
+            stage: 3,
+          }),
+        ],
+      },
+    },
+  ];
+  if (preProcessor) {
+    loaders.push({
+      loader: preProcessor,
+      options: preProcessorOptions,
+    });
+  }
+  return loaders;
 };
