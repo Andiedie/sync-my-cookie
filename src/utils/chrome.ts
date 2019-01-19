@@ -18,12 +18,12 @@ export async function importCookies(cookies: chrome.cookies.SetDetails[]): Promi
 export function exportCookies(domain: string): Promise<chrome.cookies.SetDetails[]> {
   return new Promise((resolve) => {
     chrome.cookies.getAll({domain}, (cookies) => {
-      resolve(Cookies2SetDetails(cookies));
+      resolve(cookies2SetDetails(cookies));
     });
   });
 }
 
-function Cookies2SetDetails(cookies: chrome.cookies.Cookie[]): chrome.cookies.SetDetails[] {
+function cookies2SetDetails(cookies: chrome.cookies.Cookie[]): chrome.cookies.SetDetails[] {
   return cookies.map((cookie) => {
     const result: chrome.cookies.SetDetails = {
       name: cookie.name,
@@ -34,7 +34,7 @@ function Cookies2SetDetails(cookies: chrome.cookies.Cookie[]): chrome.cookies.Se
       storeId: cookie.storeId,
       url: buildUrl(cookie.secure, cookie.domain, cookie.path),
     };
-    if (!cookie.httpOnly) {
+    if (!cookie.hostOnly) {
       result.domain = cookie.domain;
     }
     if (!cookie.session) {

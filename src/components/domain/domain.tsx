@@ -7,6 +7,7 @@ interface Prop {
   className?: string;
   active?: boolean;
   onClick?: (domain: string) => void;
+  onClose?: (domain: string) => void;
 }
 
 class Domain extends Component<Prop> {
@@ -16,7 +17,6 @@ class Domain extends Component<Prop> {
         <div
           className={[style.wrapper, this.props.active ? style.active : undefined].join(' ')}
           onClick={this.handleClick}
-          key={this.props.domain}
           data-domain={this.props.domain}
         >
           <img
@@ -28,7 +28,11 @@ class Domain extends Component<Prop> {
           <span className={style.domain}>
             {this.props.domain}
           </span>
-          <div className={style.close}>
+          <div
+            className={style.close}
+            onClick={this.handleClose}
+            data-domain={this.props.domain}
+          >
             <X />
           </div>
         </div>
@@ -39,8 +43,16 @@ class Domain extends Component<Prop> {
     (e.target as HTMLImageElement).style.opacity = '0';
   }
   private handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (this.props.onClick) {
-      this.props.onClick(event.currentTarget.dataset.domain || '');
+    const domain = event.currentTarget.dataset.domain;
+    if (this.props.onClick && domain) {
+      this.props.onClick(domain);
+    }
+  }
+  private handleClose = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation();
+    const domain = event.currentTarget.dataset.domain;
+    if (this.props.onClose && domain) {
+      this.props.onClose(domain);
     }
   }
 }

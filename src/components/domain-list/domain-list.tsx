@@ -7,6 +7,7 @@ interface Prop {
   currentDomain: string;
   isRunning: boolean;
   onDomainChange?: (domain: string) => void;
+  onDomainClose?: (domain: string) => void;
 }
 
 class DomainList extends Component<Prop> {
@@ -27,6 +28,7 @@ class DomainList extends Component<Prop> {
           domain={domain}
           active={domain === active}
           onClick={this.handleDomainClick}
+          onClose={this.handleDomainClose}
         />
       );
     });
@@ -34,6 +36,11 @@ class DomainList extends Component<Prop> {
   private handleDomainClick = (domain: string) => {
     if (this.props.onDomainChange) {
       this.props.onDomainChange(domain);
+    }
+  }
+  private handleDomainClose = (domain: string) => {
+    if (this.props.onDomainClose) {
+      this.props.onDomainClose(domain);
     }
   }
 }

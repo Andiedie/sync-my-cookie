@@ -8,7 +8,7 @@ import Domains from './components/domain-list/domain-list';
 import Setting from './components/setting/setting';
 
 import * as chromeUtils from './utils/chrome';
-import { gist } from './utils/store';
+import { auto, gist } from './utils/store';
 import { getDomain, move2Front } from './utils/utils';
 
 interface State {
@@ -47,6 +47,7 @@ class Popup extends Component<{}, State> {
           currentDomain={this.state.currentDomain}
           isRunning={this.state.isRunning}
           onDomainChange={this.handleDomainChange}
+          onDomainClose={this.handleDomainClose}
         />
       </div>
     );
@@ -55,27 +56,39 @@ class Popup extends Component<{}, State> {
   public async componentDidMount() {
     const url = await chromeUtils.getCurrentTabUrl();
     const currentDomain = getDomain(url);
-    this.setState((prevState) => ({
-      currentDomain,
-      domainList: move2Front(prevState.domainList, currentDomain),
-    }));
+    this.setState((prevState) => {
+      return {
+        currentDomain,
+        domainList: move2Front(prevState.domainList, currentDomain),
+      };
+    });
 
     await this.initGist();
     this.setState({ isRunning: false });
   }
 
+  private handleDomainClose = async (domain: string) => {
+    await auto.remove(domain);
+    const domainList = await gist.remove(domain, this.state.domainList);
+    this.setState({
+      domainList,
+    });
+  }
+
   private handleDomainChange = (domain: string) => {
-    this.setState((prevState) => ({
-      currentDomain: domain,
-      domainList: move2Front(prevState.domainList, domain),
-    }));
+    this.setState((prevState) => {
+      return {
+        currentDomain: domain,
+        domainList: move2Front(prevState.domainList, domain),
+      };
+    });
   }
 
   private handleMerge = async () => {
     this.setState({ isRunning: true });
     const savedCookie = await gist.getCookies(this.state.currentDomain);
     await chromeUtils.importCookies(savedCookie);
-    alert('Merged');
+    alert(`Merged ${savedCookie.length} cookies`);
     this.setState({ isRunning: false });
   }
 
@@ -89,11 +102,13 @@ class Popup extends Component<{}, State> {
       domain: this.state.currentDomain,
       cookies,
     }], this.state.domainList);
-    alert('Pushed');
-    this.setState((prevState) => ({
-      domainList: move2Front(domainList, prevState.currentDomain),
-      isRunning: false,
-    }));
+    alert(`Push ${cookies.length} cookies`);
+    this.setState((prevState) => {
+      return {
+        domainList: move2Front(domainList, prevState.currentDomain),
+        isRunning: false,
+      };
+    });
   }
 
   private handleSet = async () => {
@@ -112,9 +127,11 @@ class Popup extends Component<{}, State> {
       return;
     }
     const domainList = await gist.getDomainList();
-    this.setState((prevState) => ({
-      domainList: move2Front(domainList, prevState.currentDomain),
-    }));
+    this.setState((prevState) => {
+      return {
+        domainList: move2Front(domainList, prevState.currentDomain),
+      };
+    });
   }
 }
 

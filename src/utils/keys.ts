@@ -3,6 +3,7 @@ export function autoKey(domain: string, direction: 'push' | 'merge') {
 }
 
 export const DOMAIN_LIST_KEY = '__DOMAIN_LIST__';
+export const AUTO_CONFIG_KEY = '__AUTO_CONFIG__';
 export const TOKEN_KEY = '__TOKEN__';
 export const PASSWORD_KEY = '__PASSWORD__';
 export const GIST_ID_KEY = '__GIST_ID__';

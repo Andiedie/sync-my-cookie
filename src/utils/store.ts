@@ -49,21 +49,40 @@ export const setting = {
 
 export const auto = {
   async get(domain: string) {
-    return {
-      autoPush: await chromeLocal.get(keys.autoKey(domain, 'push')) === 'true',
-      autoMerge: await chromeLocal.get(keys.autoKey(domain, 'merge')) === 'true',
-    };
+    const origin = await auto.getAll();
+    const result = origin.get(domain);
+    return result || {autoPush: false, autoMerge: false};
   },
   async set(domain: string, config: {autoPush: boolean, autoMerge: boolean}) {
-    await chromeLocal.bulkSet([
-      {key: keys.autoKey(domain, 'push'), value: config.autoPush ? 'true' : 'false'},
-      {key: keys.autoKey(domain, 'merge'), value: config.autoMerge ? 'true' : 'false'},
-    ]);
+    const origin = await auto.getAll();
+    origin.set(domain, config);
+    await chromeLocal.set(keys.AUTO_CONFIG_KEY, JSON.stringify([...origin]));
+  },
+  async getAutoPush(): Promise<string[]> {
+    const origin = await auto.getAll();
+    return [...origin].filter(([_, config]) => config.autoPush).map(([domain, _]) => domain);
+  },
+  async getAutoMerge(): Promise<string[]> {
+    const origin = await auto.getAll();
+    return [...origin].filter(([_, config]) => config.autoMerge).map(([domain, _]) => domain);
+  },
+  async getAll(): Promise<Map<string, {autoPush: boolean, autoMerge: boolean}>> {
+    const json = await chromeLocal.get(keys.AUTO_CONFIG_KEY) || '[]';
+    return new Map(JSON.parse(json));
+  },
+  async remove(domain: string) {
+    const origin = await auto.getAll();
+    origin.delete(domain);
+    await chromeLocal.set(keys.AUTO_CONFIG_KEY, JSON.stringify([...origin]));
   },
 };
 
+let initialized = false;
 export const gist = {
   async init(): Promise<boolean> {
+    if (initialized) {
+      return true;
+    }
     const token = await setting.get('token');
     const password = await setting.get('password');
     if (!token || !password) {
@@ -73,6 +92,7 @@ export const gist = {
     const filename = await setting.get('filename');
     gistStore.add(new KevastGist(token, gistId, filename));
     gistStore.use(new KevastEncrypt(password));
+    initialized = true;
     return true;
   },
   async getDomainList(): Promise<string[]> {
@@ -93,6 +113,18 @@ export const gist = {
       bulk.push({key: domain, value: JSON.stringify(cookies)});
     }
     bulk.push({key: keys.DOMAIN_LIST_KEY, value: JSON.stringify(newDomainList)});
+    await gistStore.bulkSet(bulk);
+    return newDomainList;
+  },
+  async remove(domain: string, domainList?: string[]): Promise<string[]> {
+    if (!domainList) {
+      domainList = await gist.getDomainList();
+    }
+    const newDomainList = [...domainList].filter((d) => d !== domain);
+    const bulk: Pair[] = [
+      {key: keys.DOMAIN_LIST_KEY, value: JSON.stringify(newDomainList)},
+      {key: domain, value: undefined},
+    ];
     await gistStore.bulkSet(bulk);
     return newDomainList;
   },
