@@ -7,6 +7,7 @@ import Console from './components/console/console';
 import Domains from './components/domain-list/domain-list';
 import Setting from './components/setting/setting';
 
+import swal from 'sweetalert';
 import * as chromeUtils from './utils/chrome';
 import { auto, gist } from './utils/store';
 import { getDomain, move2Front } from './utils/utils';
@@ -98,7 +99,14 @@ class Popup extends Component<{}, State> {
   }
 
   private handleDomainClose = async (domain: string) => {
-    if (!confirm(`Delete cookies for ${domain}`)) {
+    const confirm = await swal({
+      title: 'Delete',
+      text: `Delete cookies under ${domain}`,
+      icon: 'warning',
+      buttons: ['Cancel', 'OK'],
+      dangerMode: true,
+    });
+    if (!confirm) {
       return;
     }
     this.setState({ isRunning: true });
@@ -127,7 +135,11 @@ class Popup extends Component<{}, State> {
     this.setState({ isRunning: true });
     const savedCookie = await gist.getCookies(this.state.currentDomain);
     await chromeUtils.importCookies(savedCookie);
-    alert(`Merged ${savedCookie.length} cookies`);
+    swal({
+      title: 'Merged',
+      text: `${savedCookie.length} cookies merged`,
+      icon: 'success',
+    });
     this.setState({ isRunning: false });
   }
 
@@ -135,13 +147,22 @@ class Popup extends Component<{}, State> {
     this.setState({ isRunning: true });
     const cookies = await chromeUtils.exportCookies(this.state.currentDomain);
     if (cookies.length === 0) {
-      alert('There is no cookie under this domain');
+      swal({
+        title: 'Cancelled',
+        text: `There is no cookie under ${this.state.currentDomain}`,
+        icon: 'info',
+      });
+      return;
     }
     const domainList = await gist.set([{
       domain: this.state.currentDomain,
       cookies,
     }], this.state.domainList);
-    alert(`Push ${cookies.length} cookies`);
+    swal({
+      title: 'Pushed',
+      text: `${cookies.length} cookies pushed`,
+      icon: 'success',
+    });
     this.setState((prevState) => {
       return {
         domainList: move2Front(domainList, prevState.currentDomain),

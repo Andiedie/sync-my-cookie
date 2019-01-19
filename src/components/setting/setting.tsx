@@ -4,6 +4,7 @@ const style = require('./setting.scss');
 import Button from '../button/button';
 
 import { KevastGist } from 'kevast-gist';
+import swal from 'sweetalert';
 import { setting } from '../../utils/store';
 
 interface Prop {
@@ -108,7 +109,11 @@ class Setting extends Component<Prop, State> {
     try {
       await kevastGist.init();
     } catch (err) {
-      alert(err.message);
+      swal({
+        title: 'Fail',
+        icon: 'error',
+        text: err.message,
+      });
       return;
     }
     await setting.set({

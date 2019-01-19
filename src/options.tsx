@@ -5,6 +5,8 @@ import './global.scss';
 
 import Settings from './components/setting/setting';
 
+import swal from 'sweetalert';
+
 class Options extends Component {
   public render() {
     return (
@@ -15,8 +17,11 @@ class Options extends Component {
       </div>
     );
   }
-  private handleSet = () => {
-    alert('Saved');
+  private handleSet = async () => {
+    await swal({
+      title: 'Saved',
+      icon: 'success',
+    });
     window.close();
   }
 }
