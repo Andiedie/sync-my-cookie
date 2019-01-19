@@ -109,7 +109,9 @@ export const gist = {
     const bulk: Pair[] = [];
     const newDomainList = [...domainList];
     for (const {domain, cookies} of list) {
-      newDomainList.push(domain);
+      if (!newDomainList.includes(domain)) {
+        newDomainList.push(domain);
+      }
       bulk.push({key: domain, value: JSON.stringify(cookies)});
     }
     bulk.push({key: keys.DOMAIN_LIST_KEY, value: JSON.stringify(newDomainList)});
