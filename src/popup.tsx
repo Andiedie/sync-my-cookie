@@ -16,6 +16,8 @@ interface State {
   currentDomain: string;
   domainList: string[];
   isRunning: boolean;
+  autoPush: boolean;
+  autoMerge: boolean;
 }
 
 class Popup extends Component<{}, State> {
@@ -26,6 +28,8 @@ class Popup extends Component<{}, State> {
       currentDomain: '',
       domainList: [],
       isRunning: true,
+      autoMerge: false,
+      autoPush: false,
     };
   }
   public render() {
@@ -38,9 +42,12 @@ class Popup extends Component<{}, State> {
         <Console
           domain={this.state.currentDomain}
           canMerge={this.state.domainList.includes(this.state.currentDomain)}
+          isRunning={this.state.isRunning}
           onMerge={this.handleMerge}
           onPush={this.handlePush}
-          isRunning={this.state.isRunning}
+          onTrigger={this.handleTrigger}
+          autoPush={this.state.autoPush}
+          autoMerge={this.state.autoMerge}
         />
         <Domains
           domains={this.state.domainList}
@@ -56,8 +63,10 @@ class Popup extends Component<{}, State> {
   public async componentDidMount() {
     const url = await chromeUtils.getCurrentTabUrl();
     const currentDomain = getDomain(url);
+    const autoConfig = await auto.get(currentDomain);
     this.setState((prevState) => {
       return {
+        ...autoConfig,
         currentDomain,
         domainList: move2Front(prevState.domainList, currentDomain),
       };
@@ -67,17 +76,47 @@ class Popup extends Component<{}, State> {
     this.setState({ isRunning: false });
   }
 
+  private handleTrigger = async (name: string) => {
+    let autoPush = this.state.autoPush;
+    let autoMerge = this.state.autoMerge;
+    switch (name) {
+      case 'AutoPush':
+        autoPush = !autoPush;
+        break;
+      case 'AutoMerge':
+        autoMerge = !autoMerge;
+        break;
+      default:
+        return;
+    }
+    const state = {
+      autoPush,
+      autoMerge,
+    };
+    await auto.set(this.state.currentDomain, state);
+    this.setState(state);
+  }
+
   private handleDomainClose = async (domain: string) => {
+    if (!confirm(`Delete cookies for ${domain}`)) {
+      return;
+    }
+    this.setState({ isRunning: true });
     await auto.remove(domain);
     const domainList = await gist.remove(domain, this.state.domainList);
     this.setState({
+      autoMerge: false,
+      autoPush: false,
       domainList,
+      isRunning: false,
     });
   }
 
-  private handleDomainChange = (domain: string) => {
+  private handleDomainChange = async (domain: string) => {
+    const autoConfig = await auto.get(domain);
     this.setState((prevState) => {
       return {
+        ...autoConfig,
         currentDomain: domain,
         domainList: move2Front(prevState.domainList, domain),
       };

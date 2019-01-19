@@ -14,24 +14,15 @@ const { Textfit } = require('react-textfit');
 interface Prop {
   domain: string;
   canMerge: boolean;
-  onMerge: () => void;
-  onPush: () => void;
   isRunning: boolean;
-}
-
-interface State {
   autoPush: boolean;
   autoMerge: boolean;
+  onMerge: () => void;
+  onPush: () => void;
+  onTrigger: (name: string) => void;
 }
 
-class Console extends Component<Prop, State> {
-  public constructor(prop: Prop) {
-    super(prop);
-    this.state = {
-      autoPush: false,
-      autoMerge: false,
-    };
-  }
+class Console extends Component<Prop> {
   public render() {
     if (this.props.domain) {
       return (
@@ -50,9 +41,9 @@ class Console extends Component<Prop, State> {
               </div>
               <span className={style.description}>Auto Push</span>
               <Slider
-                on={this.state.autoPush}
+                on={this.props.autoPush}
                 name='AutoPush'
-                trigger={this.handleTrigger}
+                onTrigger={this.handleTrigger}
                 disable={!this.props.canMerge}
               />
             </div>
@@ -60,9 +51,9 @@ class Console extends Component<Prop, State> {
               <DownloadCloud className={style.icon} />
               <span className={style.description}>Auto Merge</span>
               <Slider
-                on={this.state.autoMerge}
+                on={this.props.autoMerge}
                 name='AutoMerge'
-                trigger={this.handleTrigger}
+                onTrigger={this.handleTrigger}
                 disable={!this.props.canMerge}
               />
             </div>
@@ -93,31 +84,8 @@ class Console extends Component<Prop, State> {
       );
     }
   }
-  public async componentWillReceiveProps(nextProps: Prop) {
-    if (nextProps.domain !== this.props.domain) {
-      const state = await auto.get(nextProps.domain);
-      this.setState(state);
-    }
-  }
-  private handleTrigger = async (name: string | undefined) => {
-    let autoPush = this.state.autoPush;
-    let autoMerge = this.state.autoMerge;
-    switch (name) {
-      case 'AutoPush':
-        autoPush = !autoPush;
-        break;
-      case 'AutoMerge':
-        autoMerge = !autoMerge;
-        break;
-      default:
-        break;
-    }
-    const state = {
-      autoPush,
-      autoMerge,
-    };
-    auto.set(this.props.domain, state);
-    this.setState(state);
+  private handleTrigger = async (name: string) => {
+    this.props.onTrigger(name);
   }
 }
 

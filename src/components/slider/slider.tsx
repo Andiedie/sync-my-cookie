@@ -3,8 +3,8 @@ const style = require('./slider.scss');
 
 interface Prop {
   on?: boolean;
-  name?: string;
-  trigger?: (name: string | undefined) => void;
+  name: string;
+  onTrigger: (name: string) => void;
   disable?: boolean;
 }
 
@@ -27,8 +27,8 @@ class Slider extends Component<Prop> {
     );
   }
   public handleClick = () => {
-    if (this.props.trigger && !this.props.disable) {
-      this.props.trigger(this.props.name);
+    if (this.props.onTrigger && !this.props.disable) {
+      this.props.onTrigger(this.props.name);
     }
   }
 }
