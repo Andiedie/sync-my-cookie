@@ -21,7 +21,7 @@
     "scripts": [
       "background.js"
     ],
-    "persistent": true
+    "persistent": false
   },
   "permissions": [
     "cookies",
