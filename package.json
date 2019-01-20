@@ -41,7 +41,7 @@
     "html-webpack-template": "^6.2.0",
     "kevast": "^0.4.3",
     "kevast-chrome": "^0.0.2",
-    "kevast-encrypt": "^0.1.0",
+    "kevast-encrypt": "^0.1.1",
     "kevast-gist": "^0.1.4",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
@@ -61,6 +61,7 @@
     "tslint-react": "^3.6.0",
     "typescript": "^3.2.4",
     "webpack": "^4.28.4",
+    "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.2.1",
     "webpack-dev-server": "^3.1.14"
   }
