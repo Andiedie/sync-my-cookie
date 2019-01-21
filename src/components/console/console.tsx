@@ -1,28 +1,38 @@
 import React, { Component } from 'react';
 const style = require('./console.module.scss');
 
-import { Button, Icon, Spin, Switch, Tooltip } from 'antd';
+import { Button, Icon, Modal, Select, Spin, Switch, Tooltip } from 'antd';
+import { auto, AutoConfiguration, gist } from '../../utils/store';
 const { Textfit } = require('react-textfit');
+
+import _ from 'lodash';
 
 interface Prop {
   domain: string;
   canMerge: boolean;
-  autoPush: boolean;
-  autoMerge: boolean;
   onMerge: () => void;
   onPush: () => void;
-  onAutoConfigChange: (config: {autoPush: boolean, autoMerge: boolean}) => void;
 }
 
 interface State {
+  autoMerge: boolean;
+  autoPush: boolean;
+  autoPushName: string[];
   pushLoading: boolean;
+  configuring: boolean;
+  options: JSX.Element[];
 }
 
 class Console extends Component<Prop, State> {
   public constructor(props: Prop) {
     super(props);
     this.state = {
+      autoMerge: false,
+      autoPush: false,
+      autoPushName: [],
       pushLoading: false,
+      configuring: false,
+      options: [],
     };
   }
   public render() {
@@ -40,12 +50,36 @@ class Console extends Component<Prop, State> {
               <div className={style.secret}>
                 <Icon type='cloud-upload' className={[style.upload, style.icon].join(' ')} />
                 <Tooltip placement='topLeft' title='Configure Auto Push'>
-                  <Icon type='setting' className={[style.setting, style.icon].join(' ')} />
+                  <Button
+                    shape='circle'
+                    icon='setting'
+                    className={style.setting}
+                    onClick={this.handleAutoPushConfigClick}
+                    disabled={!this.props.canMerge}
+                  />
                 </Tooltip>
+                <Modal
+                  title='Configure Auto Push Rules'
+                  visible={this.state.configuring}
+                  onOk={this.handleAutoPushConfigDone}
+                  onCancel={this.handleAutoPushConfigClose}
+                >
+                  <div>Only push when these cookies are changed:</div>
+                  <Select<string[]>
+                    mode='tags'
+                    className={style.select}
+                    placeholder='Name of cookie, empty for all'
+                    onChange={this.handleAutoPushConfigChange}
+                    value={this.state.autoPushName}
+                    style={{ width: '100%' }}
+                  >
+                    {this.state.options}
+                  </Select>
+                </Modal>
               </div>
               <span className={style.description}>Auto Push</span>
               <Switch
-                checked={this.props.autoPush}
+                checked={this.state.autoPush}
                 onChange={this.handleAutoPushChange}
                 disabled={!this.props.canMerge}
               />
@@ -54,7 +88,7 @@ class Console extends Component<Prop, State> {
               <Icon type='cloud-download' className={style.icon} />
               <span className={style.description}>Auto Merge</span>
               <Switch
-                checked={this.props.autoMerge}
+                checked={this.state.autoMerge}
                 onChange={this.handleAutoMergeChange}
                 disabled={!this.props.canMerge}
               />
@@ -88,24 +122,69 @@ class Console extends Component<Prop, State> {
       );
     }
   }
+
+  public async componentWillReceiveProps(nextProps: Prop) {
+    const config = await auto.get(nextProps.domain);
+    this.setState({...config});
+  }
+
+  private handleAutoPushConfigClick = async () => {
+    const cookies = await gist.getCookies(this.props.domain);
+    const options = _.uniq(cookies.map((cookie) => cookie.name as string)).map((name) => {
+      return <Select.Option key={name}>{name}</Select.Option>;
+    });
+    this.setState({
+      configuring: true,
+      options,
+    });
+  }
+  private handleAutoPushConfigDone = async () => {
+    const config: AutoConfiguration = {
+      autoPush: this.state.autoPush,
+      autoMerge: this.state.autoMerge,
+      autoPushName: this.state.autoPushName,
+    };
+    await auto.set(this.props.domain, config);
+    this.handleAutoPushConfigClose();
+  }
+  private handleAutoPushConfigClose = () => {
+    this.setState({configuring: false});
+  }
+  private handleAutoPushConfigChange =
+    async (value: string[], options: React.ReactElement<any> | Array<React.ReactElement<any>>) => {
+    if (options instanceof Array) {
+      const autoPushName = options
+        .filter((option) => typeof option.key === 'string')
+        .map((option) => option.key) as string[];
+      this.setState({autoPushName});
+    }
+  }
   private handlePush = async () => {
     this.setState({pushLoading: true});
     await this.props.onPush();
     this.setState({pushLoading: false});
   }
   private handleAutoPushChange = async (checked: boolean) => {
-    const config = {
+    this.setState({
       autoPush: checked,
-      autoMerge: this.props.autoMerge,
+    });
+    const config: AutoConfiguration = {
+      autoPush: checked,
+      autoMerge: this.state.autoMerge,
+      autoPushName: this.state.autoPushName,
     };
-    await this.props.onAutoConfigChange(config);
+    await auto.set(this.props.domain, config);
   }
   private handleAutoMergeChange = async (checked: boolean) => {
-    const config = {
-      autoPush: this.props.autoPush,
+    this.setState({
       autoMerge: checked,
+    });
+    const config: AutoConfiguration = {
+      autoPush: this.state.autoPush,
+      autoMerge: checked,
+      autoPushName: this.state.autoPushName,
     };
-    this.props.onAutoConfigChange(config);
+    await auto.set(this.props.domain, config);
   }
 }
 

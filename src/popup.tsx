@@ -16,8 +16,6 @@ interface State {
   isSetting: boolean;
   currentDomain: string;
   domainList: string[];
-  autoPush: boolean;
-  autoMerge: boolean;
 }
 
 class Popup extends Component<{}, State> {
@@ -27,8 +25,6 @@ class Popup extends Component<{}, State> {
       isSetting: false,
       currentDomain: '',
       domainList: [],
-      autoMerge: false,
-      autoPush: false,
     };
   }
   public render() {
@@ -43,9 +39,6 @@ class Popup extends Component<{}, State> {
           canMerge={this.state.domainList.includes(this.state.currentDomain)}
           onMerge={this.handleMerge}
           onPush={this.handlePush}
-          onAutoConfigChange={this.handleAutoConfigChange}
-          autoPush={this.state.autoPush}
-          autoMerge={this.state.autoMerge}
         />
         <Domains
           domains={this.state.domainList}
@@ -60,21 +53,13 @@ class Popup extends Component<{}, State> {
   public async componentDidMount() {
     const url = await chromeUtils.getCurrentTabUrl();
     const currentDomain = getDomain(url);
-    const autoConfig = await auto.get(currentDomain);
+    await this.initGist();
     this.setState((prevState) => {
       return {
-        ...autoConfig,
         currentDomain,
         domainList: move2Front(prevState.domainList, currentDomain),
       };
     });
-
-    await this.initGist();
-  }
-
-  private handleAutoConfigChange = async (config: {autoPush: boolean, autoMerge: boolean}) => {
-    await auto.set(this.state.currentDomain, config);
-    this.setState(config);
   }
 
   private handleDomainClose = (domain: string) => {
@@ -89,9 +74,14 @@ class Popup extends Component<{}, State> {
         async onOk() {
           await auto.remove(domain);
           const domainList = await gist.remove(domain, that.state.domainList);
+          let currentDomain: string;
+          if (domainList.length === 0) {
+            currentDomain = getDomain(await chromeUtils.getCurrentTabUrl());
+          } else {
+            currentDomain = domainList[0];
+          }
           that.setState({
-            autoMerge: false,
-            autoPush: false,
+            currentDomain,
             domainList,
           });
           resolve();
@@ -104,10 +94,8 @@ class Popup extends Component<{}, State> {
   }
 
   private handleDomainChange = async (domain: string) => {
-    const autoConfig = await auto.get(domain);
     this.setState((prevState) => {
       return {
-        ...autoConfig,
         currentDomain: domain,
         domainList: move2Front(prevState.domainList, domain),
       };

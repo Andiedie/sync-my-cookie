@@ -47,26 +47,32 @@ export const setting = {
   },
 };
 
+export interface AutoConfiguration {
+  autoPush: boolean;
+  autoMerge: boolean;
+  autoPushName: string[];
+}
+
 export const auto = {
-  async get(domain: string) {
+  async get(domain: string): Promise<AutoConfiguration> {
     const origin = await auto.getAll();
     const result = origin.get(domain);
-    return result || {autoPush: false, autoMerge: false};
+    return result || {autoPush: false, autoMerge: false, autoPushName: []};
   },
-  async set(domain: string, config: {autoPush: boolean, autoMerge: boolean}) {
+  async set(domain: string, config: AutoConfiguration) {
     const origin = await auto.getAll();
     origin.set(domain, config);
     await chromeLocal.set(keys.AUTO_CONFIG_KEY, JSON.stringify([...origin]));
   },
-  async getAutoPush(): Promise<string[]> {
+  async getAutoPush(): Promise<Array<[string, AutoConfiguration]>> {
     const origin = await auto.getAll();
-    return [...origin].filter(([_, config]) => config.autoPush).map(([domain, _]) => domain);
+    return [...origin].filter(([_, config]) => config.autoPush);
   },
-  async getAutoMerge(): Promise<string[]> {
+  async getAutoMerge(): Promise<Array<[string, AutoConfiguration]>> {
     const origin = await auto.getAll();
-    return [...origin].filter(([_, config]) => config.autoMerge).map(([domain, _]) => domain);
+    return [...origin].filter(([_, config]) => config.autoMerge);
   },
-  async getAll(): Promise<Map<string, {autoPush: boolean, autoMerge: boolean}>> {
+  async getAll(): Promise<Map<string, AutoConfiguration>> {
     const json = await chromeLocal.get(keys.AUTO_CONFIG_KEY) || '[]';
     return new Map(JSON.parse(json));
   },
