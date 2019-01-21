@@ -1,11 +1,13 @@
-.flex {
+.wrapper {
   height: 100%;
-  width: 100%;
+  width: 500px;
+  margin: 0 auto;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  .wrapper {
+  .setting {
+    width: 100%;
     height: 600px;
-    width: 500px;
   }
 }

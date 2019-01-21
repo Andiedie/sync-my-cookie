@@ -3,7 +3,7 @@ import './setting.scss';
 const style = require('./setting.module.scss');
 
 import { Modal } from 'antd';
-import { Button, Collapse, Icon, Input, Tooltip } from 'antd';
+import { Button, Collapse, Icon, Input, message, Tooltip } from 'antd';
 
 import { KevastGist } from 'kevast-gist';
 import { setting } from '../../utils/store';
@@ -18,6 +18,8 @@ export interface State {
   gistId?: string;
   filename?: string;
   loading: boolean;
+  importModal: boolean;
+  importValue: string;
 }
 
 class Setting extends Component<Prop, State> {
@@ -27,12 +29,14 @@ class Setting extends Component<Prop, State> {
       token: '',
       password: '',
       loading: false,
+      importModal: false,
+      importValue: '',
     };
   }
   public render() {
     return (
       <div className={style.wrapper}>
-        <img src='/icon/icon128.png'/>
+        <img className={style.logo} src='/icon/icon128.png'/>
         <Input
           name='token'
           placeholder='GitHub Access Token'
@@ -85,6 +89,38 @@ class Setting extends Component<Prop, State> {
         >
           Set
         </Button>
+        <div className={style.port}>
+          <Button
+            type='primary'
+            icon='logout'
+            className={style.button}
+            onClick={this.handleExport}
+            disabled={!this.state.token ||
+              !this.state.password ||
+              !this.state.gistId ||
+              !this.state.filename}
+          >
+            Export
+          </Button>
+          <Button
+            icon='login'
+            className={style.button}
+            onClick={this.handleImportOpen}
+          >
+            Import
+          </Button>
+          <Modal
+            title='Import Setting'
+            visible={this.state.importModal}
+            onOk={this.handleImport}
+            onCancel={this.handleImportClose}
+          >
+            <Input
+              placeholder='Paste here'
+              onChange={this.handleImportChange}
+            />
+          </Modal>
+        </div>
       </div>
     );
   }
@@ -95,6 +131,51 @@ class Setting extends Component<Prop, State> {
       gistId: await setting.get('gistId') || '',
       filename: await setting.get('filename') || '',
     });
+  }
+  private handleImport = async () => {
+    let imported: any;
+    try {
+      imported = JSON.parse(atob(this.state.importValue));
+    } catch (err) {
+      message.error('Fail to import: Invalid data');
+      return;
+    }
+    this.setState({
+      token: imported.token,
+      password: imported.password,
+      gistId: imported.gistId,
+      filename: imported.filename,
+    });
+    message.success('Imported! Click "Set" to finish setting');
+    this.handleImportClose();
+  }
+  private handleImportClose = () => {
+    this.setState({importModal: false});
+  }
+  private handleImportOpen = () => {
+    this.setState({importModal: true});
+  }
+  private handleImportChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      importValue: e.currentTarget.value,
+    });
+  }
+  private handleExport = async () => {
+    if (this.state.token &&
+      this.state.password &&
+      this.state.gistId &&
+      this.state.filename
+      ) {
+        const base64 = btoa(JSON.stringify({
+          token: this.state.token,
+          password: this.state.password,
+          gistId: this.state.gistId,
+          filename: this.state.filename,
+        }));
+        const nav = navigator as any;
+        await nav.clipboard.writeText(base64);
+        message.success('Exported to your clipboard!');
+      }
   }
   private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.currentTarget;

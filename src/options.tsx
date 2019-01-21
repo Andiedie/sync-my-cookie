@@ -9,8 +9,8 @@ import Settings from './components/setting/setting';
 class Options extends Component {
   public render() {
     return (
-      <div className={style.flex}>
-        <div className={style.wrapper}>
+      <div className={style.wrapper}>
+        <div className={style.setting}>
           <Settings onSet={this.handleSet} />
         </div>
       </div>

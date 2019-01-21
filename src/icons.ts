@@ -17,6 +17,12 @@ export {
 export {
   default as ForkOutline,
 } from '@ant-design/icons/lib/outline/ForkOutline';
+export {
+  default as LoginOutline,
+} from '@ant-design/icons/lib/outline/LoginOutline';
+export {
+  default as LogoutOutline,
+} from '@ant-design/icons/lib/outline/LogoutOutline';
 
 // export what antd other components need
 export {

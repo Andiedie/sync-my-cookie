@@ -7,7 +7,7 @@
   align-items: stretch;
 
   .input {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 
   .filename {
@@ -15,17 +15,27 @@
   }
 
   .collapse {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 
   .panel {
     border: 0;
   }
 
-  img {
+  .logo {
     height: 100px;
     width: 100px;
     align-self: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+  }
+
+  .port {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    .button {
+      display: inline-block;
+      width: 48%;
+    }
   }
 }
