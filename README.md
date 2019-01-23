@@ -6,10 +6,10 @@ You can specify to sync cookies for any website, configure rules for `Auto Merge
 
 ## Install
 - Recommended: [Chrome Web Store](https://chrome.google.com/webstore/detail/syncmycookie/laapobniolmbhnkldepjnebendehhmmf)
-- [SyncMyCookie.crx](https://github.com/andiedie/sync-my-cookie/releases/download/v2.0.0/SyncMyCookie.crx.zip)
-- [Pre Built](https://github.com/andiedie/sync-my-cookie/releases/download/v2.0.0/SyncMyCookie.built.zip)
+- [SyncMyCookie.crx](https://github.com/andiedie/sync-my-cookie/releases/download/v2.0.0/crx.zip)
+- [Pre Built](https://github.com/andiedie/sync-my-cookie/releases/download/v2.0.0/pre-built.zip)
 
-  Enable the `Developer mode` in the Chrome Extension(`chrome://extensions`) and load it via `Load Upacked`.
+  Enable the `Developer mode` in the Chrome Extension(`chrome://extensions`) and load it via `Load Unpacked`.
   
 - Build from Source
 
