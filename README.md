@@ -63,6 +63,8 @@ Input your token and a password to encrypt data.
 
 Now feel free to use this extension.
 
+Note: If ignoring the optional `Gist ID` and `Filename` fields, this extension creates a brand new Gist to store the data. If you want to synchronize cookies between two browsers, the extensions on both browsers must have the same configuration, namely the four fields `GitHub Access Token`, `password`, `Gist ID` and `Filename` must be identical. The plugin provides the ability to import and export configurations to help you get the job done.
+
 ## Usage
 ### Push cookies
 To push your cookies for specific website to gist storage, just open this extension while browsing that website and click `Push`.
