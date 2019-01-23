@@ -199,6 +199,7 @@ class Setting extends Component<Prop, State> {
       });
       return;
     }
+    await new Promise((resolve) => chrome.storage.local.clear(resolve));
     await setting.set({
       token: this.state.token,
       password: this.state.password,
