@@ -1,4 +1,5 @@
 # SyncMyCookie
+[English](https://github.com/Andiedie/sync-my-cookie/blob/master/README.md) | [中文](https://blog.andiedie.cn/posts/abbd/)
 
 SyncMyCookie is a chrome extension to synchronize your cookies.
 
